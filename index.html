@@ -592,46 +592,26 @@
             }
         }
         
-        /* 모바일 스타일 (< 768px) - 고품질 업그레이드 */
+        /* 모바일 스타일 (< 768px) */
         @media screen and (max-width: 767px) {
             body {
                 padding: 0;
                 font-size: 8pt;
-                background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
             }
             
             .title-bar {
-                padding: 12px;
-                font-size: 11pt;
+                padding: 6px;
+                font-size: 9pt;
                 text-align: center;
-                background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                border-bottom: 1px solid var(--border-color);
-                box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-                position: relative;
-                z-index: 100;
             }
             
             .main-window {
                 flex-direction: column;
-                min-height: calc(100vh - 60px);
-                background: transparent;
+                min-height: calc(100vh - 40px);
             }
             
             .mobile-menu-toggle {
                 display: flex;
-                background: linear-gradient(135deg, var(--button-bg), var(--button-hover));
-                border: none;
-                box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                border: 2px solid rgba(255,255,255,0.1);
-            }
-            
-            .mobile-menu-toggle:hover {
-                transform: scale(1.1);
-                box-shadow: 0 12px 40px rgba(0,0,0,0.3);
             }
             
             .mobile-menu-close {
@@ -640,36 +620,22 @@
             
             .mobile-menu-header {
                 display: flex;
-                background: linear-gradient(135deg, 
-                    rgba(255,255,255,0.15) 0%, 
-                    rgba(255,255,255,0.05) 100%);
-                backdrop-filter: blur(30px);
-                -webkit-backdrop-filter: blur(30px);
-                border-bottom: 1px solid rgba(255,255,255,0.1);
-                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             }
             
             .mobile-menu-panel {
-                width: 90%;
-                max-width: 380px;
+                width: 85%;
+                max-width: 350px;
                 position: fixed;
                 top: 0;
                 left: -100%;
                 height: 100vh;
-                background: linear-gradient(180deg, 
-                    var(--bg-primary) 0%, 
-                    var(--bg-secondary) 50%, 
-                    var(--bg-primary) 100%);
+                background: var(--bg-primary);
                 z-index: 1001;
-                padding: 90px 25px 25px 25px;
+                padding: 80px 20px 20px 20px;
                 overflow-x: auto;
-                transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                 border-right: 3px solid var(--border-color);
-                box-shadow: 
-                    5px 0 50px rgba(0,0,0,0.3),
-                    inset -1px 0 0 rgba(255,255,255,0.1);
-                backdrop-filter: blur(30px);
-                -webkit-backdrop-filter: blur(30px);
+                box-shadow: 5px 0 25px rgba(0,0,0,0.3);
             }
             
             .mobile-menu-panel.active {
@@ -682,355 +648,83 @@
             
             .plot-frame {
                 width: 100%;
-                margin: 8px;
-                padding: 8px;
-                min-height: calc(100vh - 80px);
-                background: var(--plot-bg);
-                border-radius: 16px;
-                box-shadow: 
-                    0 8px 32px rgba(0,0,0,0.1),
-                    inset 0 1px 0 rgba(255,255,255,0.1);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
+                margin: 5px;
+                padding: 5px;
+                min-height: calc(100vh - 60px);
             }
             
-            /* 고품질 모바일 최적화 컨트롤 */
+            /* 모바일 최적화 컨트롤 */
             .labelframe {
-                margin: 12px 0;
-                padding: 20px;
-                border-radius: 16px;
-                background: linear-gradient(135deg, 
-                    rgba(255,255,255,0.1) 0%, 
-                    rgba(255,255,255,0.05) 100%);
-                border: 1px solid rgba(255,255,255,0.1);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                box-shadow: 
-                    0 8px 32px rgba(0,0,0,0.1),
-                    inset 0 1px 0 rgba(255,255,255,0.1);
-                position: relative;
-                overflow: hidden;
-                transition: all 0.3s ease;
-            }
-            
-            .labelframe::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: 2px;
-                background: linear-gradient(90deg, 
-                    transparent, 
-                    rgba(74, 158, 255, 0.5), 
-                    rgba(255, 64, 129, 0.5), 
-                    transparent);
-                animation: shimmer 3s ease-in-out infinite;
-            }
-            
-            @keyframes shimmer {
-                0%, 100% { opacity: 0.3; }
-                50% { opacity: 1; }
-            }
-            
-            .labelframe:hover {
-                transform: translateY(-2px);
-                box-shadow: 
-                    0 12px 40px rgba(0,0,0,0.15),
-                    inset 0 1px 0 rgba(255,255,255,0.2);
+                margin: 6px 0;
+                padding: 6px;
+                border: 1px solid var(--border-color);
             }
             
             .labelframe-title {
-                font-size: 12pt;
+                font-size: 9pt;
                 font-weight: bold;
-                background: linear-gradient(135deg, #4A9EFF, #FF4081);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                padding: 0 12px;
-                position: relative;
-                top: -35px;
-                left: -5px;
-                display: inline-block;
-                text-shadow: 0 2px 10px rgba(0,0,0,0.3);
             }
             
             .tk-button {
-                font-size: 10pt;
-                padding: 12px 20px;
-                min-width: 80px;
-                margin: 6px;
-                border-radius: 12px;
-                background: linear-gradient(135deg, var(--button-bg), var(--button-hover));
-                border: none;
-                color: var(--text-primary);
-                box-shadow: 
-                    0 4px 20px rgba(0,0,0,0.1),
-                    inset 0 1px 0 rgba(255,255,255,0.2);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
+                font-size: 9pt;
+                padding: 8px 12px;
+                min-width: 70px;
+                margin: 3px;
                 touch-action: manipulation;
-                font-weight: 600;
-                text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                position: relative;
-                overflow: hidden;
-            }
-            
-            .tk-button::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(90deg, 
-                    transparent, 
-                    rgba(255,255,255,0.3), 
-                    transparent);
-                transition: left 0.5s ease;
-            }
-            
-            .tk-button:hover::before {
-                left: 100%;
-            }
-            
-            .tk-button:active {
-                transform: scale(0.95);
-                box-shadow: 
-                    0 2px 10px rgba(0,0,0,0.2),
-                    inset 0 2px 4px rgba(0,0,0,0.1);
             }
             
             .tk-scale {
                 width: 100%;
-                height: 35px;
-                margin: 10px 0;
-                appearance: none;
-                background: linear-gradient(to right, 
-                    rgba(74, 158, 255, 0.3), 
-                    rgba(255, 64, 129, 0.3));
-                border-radius: 18px;
-                outline: none;
+                height: 25px;
+                margin: 6px 0;
                 touch-action: manipulation;
-                box-shadow: 
-                    inset 0 2px 8px rgba(0,0,0,0.1),
-                    0 4px 12px rgba(0,0,0,0.1);
-                border: 1px solid rgba(255,255,255,0.2);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
             }
             
             .tk-scale::-webkit-slider-thumb {
-                appearance: none;
-                width: 28px;
-                height: 28px;
-                background: linear-gradient(135deg, #4A9EFF, #FF4081);
-                border-radius: 50%;
-                cursor: grab;
-                box-shadow: 
-                    0 4px 16px rgba(0,0,0,0.2),
-                    inset 0 1px 0 rgba(255,255,255,0.3);
-                border: 2px solid rgba(255,255,255,0.5);
-                transition: all 0.3s ease;
-            }
-            
-            .tk-scale::-webkit-slider-thumb:hover {
-                transform: scale(1.2);
-                box-shadow: 
-                    0 6px 24px rgba(0,0,0,0.3),
-                    inset 0 1px 0 rgba(255,255,255,0.5);
-            }
-            
-            .tk-scale::-webkit-slider-thumb:active {
-                cursor: grabbing;
-                transform: scale(1.3);
-                box-shadow: 
-                    0 8px 32px rgba(0,0,0,0.4),
-                    inset 0 2px 4px rgba(0,0,0,0.2);
+                width: 20px;
+                height: 20px;
             }
             
             .tk-combobox {
                 width: 100%;
-                font-size: 10pt;
-                padding: 15px 20px;
-                border-radius: 12px;
-                background: linear-gradient(135deg, 
-                    rgba(255,255,255,0.1), 
-                    rgba(255,255,255,0.05));
-                border: 1px solid rgba(255,255,255,0.2);
-                color: var(--text-primary);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
+                font-size: 9pt;
+                padding: 8px;
                 touch-action: manipulation;
-                box-shadow: 
-                    0 4px 20px rgba(0,0,0,0.1),
-                    inset 0 1px 0 rgba(255,255,255,0.1);
-                transition: all 0.3s ease;
-            }
-            
-            .tk-combobox:focus {
-                outline: none;
-                border-color: #4A9EFF;
-                box-shadow: 
-                    0 0 20px rgba(74, 158, 255, 0.3),
-                    0 4px 20px rgba(0,0,0,0.1),
-                    inset 0 1px 0 rgba(255,255,255,0.2);
             }
             
             .tk-label {
-                font-size: 10pt;
-                margin: 8px 0;
-                font-weight: 600;
-                text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-                color: var(--text-primary);
+                font-size: 9pt;
+                margin: 4px 0;
             }
             
             .slider-value {
-                font-size: 11pt;
+                font-size: 9pt;
                 font-weight: bold;
-                background: linear-gradient(135deg, #4A9EFF, #FF4081);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                text-shadow: none;
-                padding: 8px 16px;
-                border-radius: 20px;
-                background: rgba(255,255,255,0.1);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-                display: inline-block;
-                margin-left: 12px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             }
             
             .button-group {
                 flex-wrap: wrap;
-                gap: 10px;
+                gap: 6px;
                 justify-content: center;
-                margin: 20px 0;
             }
             
             .results-grid {
-                font-size: 9pt;
-                gap: 12px;
-                padding: 20px;
-                background: linear-gradient(135deg, 
-                    rgba(255,255,255,0.05), 
-                    rgba(255,255,255,0.02));
-                border-radius: 16px;
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                box-shadow: 
-                    inset 0 1px 0 rgba(255,255,255,0.1),
-                    0 4px 20px rgba(0,0,0,0.1);
-                border: 1px solid rgba(255,255,255,0.1);
+                font-size: 8pt;
+                gap: 6px;
             }
             
             .result-label {
                 font-weight: bold;
-                font-size: 10pt;
-                background: linear-gradient(135deg, #4A9EFF, #FF4081);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                text-shadow: none;
             }
             
             .result-value {
-                font-size: 11pt;
-                font-weight: 600;
-                padding: 8px 16px;
-                background: rgba(255,255,255,0.1);
-                border-radius: 8px;
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-                text-align: center;
-                box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
-                border: 1px solid rgba(255,255,255,0.1);
-            }
-            
-            /* 라디오 버튼 커스터마이징 */
-            .tk-radiobutton {
-                appearance: none;
-                width: 20px;
-                height: 20px;
-                border-radius: 50%;
-                background: linear-gradient(135deg, 
-                    rgba(255,255,255,0.1), 
-                    rgba(255,255,255,0.05));
-                border: 2px solid rgba(255,255,255,0.3);
-                margin-right: 12px;
-                position: relative;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                box-shadow: 
-                    0 2px 10px rgba(0,0,0,0.1),
-                    inset 0 1px 0 rgba(255,255,255,0.1);
-            }
-            
-            .tk-radiobutton:checked {
-                background: linear-gradient(135deg, #4A9EFF, #FF4081);
-                border-color: rgba(255,255,255,0.8);
-                box-shadow: 
-                    0 4px 20px rgba(74, 158, 255, 0.3),
-                    inset 0 1px 0 rgba(255,255,255,0.3);
-            }
-            
-            .tk-radiobutton:checked::after {
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 8px;
-                height: 8px;
-                background: white;
-                border-radius: 50%;
-                transform: translate(-50%, -50%);
-                box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            }
-            
-            /* 슬라이더 컨테이너 개선 */
-            .slider-container {
-                background: rgba(255,255,255,0.05);
-                border-radius: 12px;
-                padding: 16px;
-                margin: 16px 0;
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-                border: 1px solid rgba(255,255,255,0.1);
-                box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+                font-size: 9pt;
             }
             
             /* 모바일 그래프 최적화 */
             #plot-area {
-                min-height: calc(100vh - 100px);
+                min-height: calc(100vh - 80px);
                 width: 100%;
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 
-                    0 8px 32px rgba(0,0,0,0.1),
-                    inset 0 1px 0 rgba(255,255,255,0.1);
-            }
-            
-            /* 스크롤바 커스터마이징 */
-            .mobile-menu-panel::-webkit-scrollbar {
-                width: 6px;
-            }
-            
-            .mobile-menu-panel::-webkit-scrollbar-track {
-                background: rgba(255,255,255,0.05);
-                border-radius: 3px;
-            }
-            
-            .mobile-menu-panel::-webkit-scrollbar-thumb {
-                background: linear-gradient(135deg, #4A9EFF, #FF4081);
-                border-radius: 3px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            }
-            
-            .mobile-menu-panel::-webkit-scrollbar-thumb:hover {
-                background: linear-gradient(135deg, #FF4081, #4A9EFF);
             }
         }
         
@@ -1359,7 +1053,15 @@
                 // 차트 제목
                 'chart_title_3d': "🌊 3D Ekman Transport Visualization",
                 'chart_title_2d': "🌊 Ekman Transport Visualization",
-                'chart_title_mobile': "🌊 Ekman Transport Visualization"
+                'chart_title_mobile': "🌊 Ekman Transport Visualization",
+                
+                // 단위
+                'unit_ms': "m/s",
+                'unit_degree': "°",
+                'unit_meter': "m",
+                'unit_wind_stress': "mN/m²",
+                'unit_transport': "m³/s",
+                'unit_energy': "mW/m²"
             },
             'ko': {
                 // UI 요소들
@@ -1399,7 +1101,15 @@
                 // 차트 제목
                 'chart_title_3d': "🌊 3D 에크만 수송 시각화",
                 'chart_title_2d': "🌊 에크만 수송 시각화",
-                'chart_title_mobile': "🌊 에크만 수송 시각화"
+                'chart_title_mobile': "🌊 에크만 수송 시각화",
+                
+                // 단위
+                'unit_ms': "m/s",
+                'unit_degree': "°",
+                'unit_meter': "m",
+                'unit_wind_stress': "mN/m²",
+                'unit_transport': "m³/s",
+                'unit_energy': "mW/m²"
             },
             'zh': {
                 // UI 요소들
@@ -1439,7 +1149,15 @@
                 // 图表标题
                 'chart_title_3d': "🌊 3D 埃克曼输运可视化",
                 'chart_title_2d': "🌊 埃克曼输运可视化",
-                'chart_title_mobile': "🌊 埃克曼输运可视化"
+                'chart_title_mobile': "🌊 埃克曼输运可视化",
+                
+                // 单位
+                'unit_ms': "m/s",
+                'unit_degree': "°",
+                'unit_meter': "m",
+                'unit_wind_stress': "mN/m²",
+                'unit_transport': "m³/s",
+                'unit_energy': "mW/m²"
             },
             'ja': {
                 // UI 요소들
@@ -1479,7 +1197,15 @@
                 // チャートタイトル
                 'chart_title_3d': "🌊 3D エクマン輸送可視化",
                 'chart_title_2d': "🌊 エクマン輸送可視化",
-                'chart_title_mobile': "🌊 エクマン輸送可視化"
+                'chart_title_mobile': "🌊 エクマン輸送可視化",
+                
+                // 単位
+                'unit_ms': "m/s",
+                'unit_degree': "°",
+                'unit_meter': "m",
+                'unit_wind_stress': "mN/m²",
+                'unit_transport': "m³/s",
+                'unit_energy': "mW/m²"
             },
             'es': {
                 // UI 요소들
@@ -1519,7 +1245,15 @@
                 // Títulos de gráficos
                 'chart_title_3d': "🌊 Visualización 3D del Transporte de Ekman",
                 'chart_title_2d': "🌊 Visualización del Transporte de Ekman",
-                'chart_title_mobile': "🌊 Visualización del Transporte de Ekman"
+                'chart_title_mobile': "🌊 Visualización del Transporte de Ekman",
+                
+                // Unidades
+                'unit_ms': "m/s",
+                'unit_degree': "°",
+                'unit_meter': "m",
+                'unit_wind_stress': "mN/m²",
+                'unit_transport': "m³/s",
+                'unit_energy': "mW/m²"
             },
             'ru': {
                 // UI 요소들
@@ -1559,7 +1293,15 @@
                 // Заголовки графиков
                 'chart_title_3d': "🌊 3D Визуализация Переноса Экмана",
                 'chart_title_2d': "🌊 Визуализация Переноса Экмана",
-                'chart_title_mobile': "🌊 Визуализация Переноса Экмана"
+                'chart_title_mobile': "🌊 Визуализация Переноса Экмана",
+                
+                // Единицы измерения
+                'unit_ms': "м/с",
+                'unit_degree': "°",
+                'unit_meter': "м",
+                'unit_wind_stress': "мН/м²",
+                'unit_transport': "м³/с",
+                'unit_energy': "мВт/м²"
             }
         };
         
@@ -1576,112 +1318,62 @@
             // 제목 바
             document.querySelector('.title-bar').textContent = t('app_title');
             
-            // 모바일 메뉴 제목 - 언어에 따라 다르게 설정
-            const mobileTitle = currentLanguage === 'ko' ? '⚙️ 제어판' :
-                               currentLanguage === 'zh' ? '⚙️ 控制面板' :
-                               currentLanguage === 'ja' ? '⚙️ コントロールパネル' :
-                               currentLanguage === 'es' ? '⚙️ Panel de Control' :
-                               currentLanguage === 'ru' ? '⚙️ Панель Управления' :
-                               '⚙️ Control Panel';
-            document.querySelector('.mobile-menu-title').textContent = mobileTitle;
+            // 모바일 메뉴 제목 (간단하게 제어판으로 통일)
+            const mobileMenuTitle = currentLanguage === 'ko' ? '⚙️ 제어판' :
+                                   currentLanguage === 'zh' ? '⚙️ 控制面板' :
+                                   currentLanguage === 'ja' ? '⚙️ コントロールパネル' :
+                                   currentLanguage === 'es' ? '⚙️ Panel de Control' :
+                                   currentLanguage === 'ru' ? '⚙️ Панель Управления' :
+                                   '⚙️ Control Panel';
+            document.querySelector('.mobile-menu-title').textContent = mobileMenuTitle;
             
-            // 라벨프레임 제목들을 직접 선택하여 업데이트
-            const labelframeTitles = document.querySelectorAll('.labelframe-title');
-            labelframeTitles.forEach((element) => {
-                const currentText = element.textContent.trim();
-                
-                // 언어 선택
-                if (currentText.includes('언어') || currentText.includes('Language') || currentText.includes('语言') || 
-                    currentText.includes('言語') || currentText.includes('Idioma') || currentText.includes('Язык')) {
-                    element.textContent = t('language_select');
-                }
-                // 파라미터 설정
-                else if (currentText.includes('파라미터') || currentText.includes('Parameter') || currentText.includes('参数') || 
-                         currentText.includes('パラメータ') || currentText.includes('Parámetros') || currentText.includes('Параметр')) {
-                    element.textContent = t('param_settings');
-                }
-                // 시각화 타입
-                else if (currentText.includes('시각화') || currentText.includes('Visualization') || currentText.includes('可视化') || 
-                         currentText.includes('可視化') || currentText.includes('Visualización') || currentText.includes('Визуализации')) {
-                    element.textContent = t('vis_type');
-                }
-                // 사전 설정
-                else if (currentText.includes('사전') || currentText.includes('Preset') || currentText.includes('预设') || 
-                         currentText.includes('プリセット') || currentText.includes('Predefinida') || currentText.includes('Предустановки')) {
-                    element.textContent = t('preset_settings');
-                }
-                // 지역/위치 선택
-                else if (currentText.includes('지역') || currentText.includes('Location') || currentText.includes('位置') || 
-                         currentText.includes('場所') || currentText.includes('Ubicación') || currentText.includes('Местоположения')) {
-                    element.textContent = t('location_select');
-                }
-                // 계산 결과
-                else if (currentText.includes('결과') || currentText.includes('Results') || currentText.includes('结果') || 
-                         currentText.includes('結果') || currentText.includes('Resultados') || currentText.includes('Результаты')) {
-                    element.textContent = t('results_title');
+            // 라벨프레임 제목들
+            document.querySelectorAll('.labelframe-title').forEach((element, index) => {
+                const titles = [
+                    'language_select',
+                    'param_settings', 
+                    'vis_type',
+                    'preset_settings',
+                    'location_select',
+                    '', // 버튼 그룹
+                    'results_title'
+                ];
+                if (titles[index]) {
+                    element.textContent = t(titles[index]);
                 }
             });
             
             // 슬라이더 라벨들
-            const windSpeedLabel = document.querySelector('label[for="wind_speed"]');
-            if (windSpeedLabel) windSpeedLabel.textContent = t('wind_speed') + ':';
-            
-            const windDirectionLabel = document.querySelector('label[for="wind_direction"]');
-            if (windDirectionLabel) windDirectionLabel.textContent = t('wind_direction') + ':';
-            
-            const latitudeLabel = document.querySelector('label[for="latitude"]');
-            if (latitudeLabel) latitudeLabel.textContent = t('latitude') + ':';
-            
-            const depthLabel = document.querySelector('label[for="depth"]');
-            if (depthLabel) depthLabel.textContent = t('depth') + ':';
+            document.querySelector('label[for="wind_speed"]').textContent = t('wind_speed') + ':';
+            document.querySelector('label[for="wind_direction"]').textContent = t('wind_direction') + ':';
+            document.querySelector('label[for="latitude"]').textContent = t('latitude') + ':';
+            document.querySelector('label[for="depth"]').textContent = t('depth') + ':';
             
             // 라디오 버튼 라벨들
-            const vis3dLabel = document.querySelector('label[for="vis_3d"]');
-            if (vis3dLabel) vis3dLabel.textContent = t('vis_3d');
-            
-            const vis2dLabel = document.querySelector('label[for="vis_2d"]');
-            if (vis2dLabel) vis2dLabel.textContent = t('vis_2d');
+            document.querySelector('label[for="vis_3d"]').textContent = t('vis_3d');
+            document.querySelector('label[for="vis_2d"]').textContent = t('vis_2d');
             
             // 버튼들
             document.querySelectorAll('.tk-button').forEach(button => {
                 const text = button.textContent.trim();
-                if (text.includes('일반') || text.includes('Normal') || text.includes('正常') || text.includes('通常') || text.includes('Обычно')) {
+                if (text.includes('일반') || text.includes('Normal') || text.includes('正常') || text.includes('通常') || text.includes('Обычно') || text.includes('🌤️')) {
                     button.textContent = t('preset_normal');
-                } else if (text.includes('강풍') || text.includes('Strong Wind') || text.includes('强风') || text.includes('強風') || text.includes('Viento Fuerte') || text.includes('Сильный Ветер')) {
+                } else if (text.includes('강풍') || text.includes('Strong Wind') || text.includes('强风') || text.includes('強風') || text.includes('Viento Fuerte') || text.includes('Сильный Ветер') || text.includes('💨')) {
                     button.textContent = t('preset_strong');
-                } else if (text.includes('태풍') || text.includes('Typhoon') || text.includes('台风') || text.includes('台風') || text.includes('Tifón') || text.includes('Тайфун')) {
+                } else if (text.includes('태풍') || text.includes('Typhoon') || text.includes('台风') || text.includes('台風') || text.includes('Tifón') || text.includes('Тайфун') || text.includes('🌪️')) {
                     button.textContent = t('preset_typhoon');
-                } else if (text.includes('계산') || text.includes('Calculate') || text.includes('计算') || text.includes('計算') || text.includes('Calcular') || text.includes('Рассчитать')) {
+                } else if (text.includes('계산') || text.includes('Calculate') || text.includes('计算') || text.includes('計算') || text.includes('Calcular') || text.includes('Рассчитать') || text.includes('🔄')) {
                     button.textContent = t('calc_button');
-                } else if (text.includes('내보내기') || text.includes('Export') || text.includes('导出') || text.includes('エクスポート') || text.includes('Exportar') || text.includes('Экспорт')) {
+                } else if (text.includes('내보내기') || text.includes('Export') || text.includes('导出') || text.includes('エクスポート') || text.includes('Exportar') || text.includes('Экспорт') || text.includes('💾')) {
                     button.textContent = t('export_button');
                 }
             });
             
-            // 결과 라벨들을 직접 선택하여 업데이트
-            const resultLabels = document.querySelectorAll('.result-label');
-            resultLabels.forEach((element) => {
-                const currentText = element.textContent.trim();
-                
-                // 바람 응력
-                if (currentText.includes('바람') || currentText.includes('Wind') || currentText.includes('风') || 
-                    currentText.includes('風') || currentText.includes('Viento') || currentText.includes('Ветра')) {
-                    element.textContent = t('wind_stress');
-                }
-                // 에크만 깊이
-                else if (currentText.includes('에크만') || currentText.includes('Ekman') || currentText.includes('埃克曼') || 
-                         currentText.includes('エクマン') || currentText.includes('Экмана')) {
-                    element.textContent = t('ekman_depth');
-                }
-                // 총 수송량
-                else if (currentText.includes('수송') || currentText.includes('Transport') || currentText.includes('输运') || 
-                         currentText.includes('輸送') || currentText.includes('Transporte') || currentText.includes('Перенос')) {
-                    element.textContent = t('total_transport');
-                }
-                // 에너지 전달률
-                else if (currentText.includes('에너지') || currentText.includes('Energy') || currentText.includes('能量') || 
-                         currentText.includes('エネルギー') || currentText.includes('Energía') || currentText.includes('Энергии')) {
-                    element.textContent = t('energy_transfer');
+            // 결과 라벨들
+            document.querySelectorAll('.result-label').forEach((element, index) => {
+                const labels = ['wind_stress', 'ekman_depth', 'total_transport', 'energy_transfer'];
+                if (labels[index]) {
+                    element.textContent = t(labels[index]);
                 }
             });
             
@@ -1700,7 +1392,17 @@
                 plotMessage.textContent = t('calc_message');
             }
             
-            console.log(`🌍 언어가 ${currentLanguage}로 변경되었습니다.`);
+            console.log(`🌍 ${currentLanguage === 'ko' ? '언어가' :
+                              currentLanguage === 'zh' ? '语言已切换为' :
+                              currentLanguage === 'ja' ? '言語が' :
+                              currentLanguage === 'es' ? 'Idioma cambiado a' :
+                              currentLanguage === 'ru' ? 'Язык изменен на' :
+                              'Language changed to'} ${currentLanguage}${currentLanguage === 'ko' ? '로 변경되었습니다.' :
+                                                                                                      currentLanguage === 'zh' ? '' :
+                                                                                                      currentLanguage === 'ja' ? 'に変更されました。' :
+                                                                                                      currentLanguage === 'es' ? '' :
+                                                                                                      currentLanguage === 'ru' ? '' :
+                                                                                                      ''}`);
         }
         
         // 언어 변경 함수
@@ -1708,6 +1410,11 @@
             currentLanguage = newLanguage;
             localStorage.setItem('ekman_language', newLanguage);
             updateUITexts();
+            
+            // 기존 계산 결과가 있다면 번역된 언어로 업데이트
+            if (currentResults) {
+                updateResultsDisplay(currentResults);
+            }
             
             // 차트가 이미 생성되어 있다면 다시 그리기
             if (currentResults) {
@@ -2737,47 +2444,26 @@
         
         // 결과 표시 업데이트
         function updateResultsDisplay(results) {
+            // 결과 라벨들도 번역 적용
+            const resultLabels = document.querySelectorAll('.result-label');
+            resultLabels.forEach((element, index) => {
+                const labels = ['wind_stress', 'ekman_depth', 'total_transport', 'energy_transfer'];
+                if (labels[index]) {
+                    element.textContent = t(labels[index]);
+                }
+            });
+            
+            // 번역된 단위로 결과 값 표시
             document.getElementById('wind_stress').textContent = 
-                `${(results.windStress * 1000).toFixed(3)} mN/m²`;
+                `${(results.windStress * 1000).toFixed(3)} ${t('unit_wind_stress')}`;
             document.getElementById('ekman_depth').textContent = 
-                `${results.ekmanDepth.toFixed(2)} m`;
+                `${results.ekmanDepth.toFixed(2)} ${t('unit_meter')}`;
             
             const totalTransport = Math.sqrt(results.Mx**2 + results.My**2);
             document.getElementById('total_transport').textContent = 
-                `${totalTransport.toExponential(3)} m³/s`;
+                `${totalTransport.toExponential(3)} ${t('unit_transport')}`;
             document.getElementById('energy_transfer').textContent = 
-                `${(results.energyTransfer * 1000).toFixed(4)} mW/m²`;
-            
-            // 결과 표시 후 라벨들을 현재 언어로 업데이트
-            setTimeout(() => {
-                const resultLabels = document.querySelectorAll('.result-label');
-                resultLabels.forEach((element) => {
-                    const currentText = element.textContent.trim();
-                    
-                    // 바람 응력
-                    if (currentText.includes('바람') || currentText.includes('Wind') || currentText.includes('风') || 
-                        currentText.includes('風') || currentText.includes('Viento') || currentText.includes('Ветра') || currentText.includes('Напряжение')) {
-                        element.textContent = t('wind_stress');
-                    }
-                    // 에크만 깊이
-                    else if (currentText.includes('에크만') || currentText.includes('Ekman') || currentText.includes('埃克曼') || 
-                             currentText.includes('エクマン') || currentText.includes('Экмана') || currentText.includes('Глубина')) {
-                        element.textContent = t('ekman_depth');
-                    }
-                    // 총 수송량
-                    else if (currentText.includes('수송') || currentText.includes('Transport') || currentText.includes('输运') || 
-                             currentText.includes('輸送') || currentText.includes('Transporte') || currentText.includes('Перенос')) {
-                        element.textContent = t('total_transport');
-                    }
-                    // 에너지 전달률
-                    else if (currentText.includes('에너지') || currentText.includes('Energy') || currentText.includes('能量') || 
-                             currentText.includes('エネルギー') || currentText.includes('Energía') || currentText.includes('Энергии') || currentText.includes('Передача')) {
-                        element.textContent = t('energy_transfer');
-                    }
-                });
-                
-                console.log(`🌍 결과 라벨이 ${currentLanguage} 언어로 업데이트되었습니다.`);
-            }, 10);
+                `${(results.energyTransfer * 1000).toFixed(4)} ${t('unit_energy')}`;
         }
         
         // 내보내기
@@ -2923,14 +2609,21 @@
             // 언어 변경 이벤트 리스너
             languageSelect.addEventListener('change', function() {
                 changeLanguage(this.value);
-                console.log(`🌍 언어가 ${this.value}로 변경되었습니다.`);
+                console.log(`🌍 ${currentLanguage === 'ko' ? '언어가' :
+                                  currentLanguage === 'zh' ? '语言已切换为' :
+                                  currentLanguage === 'ja' ? '言語が' :
+                                  currentLanguage === 'es' ? 'Idioma cambiado a' :
+                                  currentLanguage === 'ru' ? 'Язык изменен на' :
+                                  'Language changed to'} ${currentLanguage}${currentLanguage === 'ko' ? '로 변경되었습니다.' :
+                                                                                                      currentLanguage === 'zh' ? '' :
+                                                                                                      currentLanguage === 'ja' ? 'に変更されました。' :
+                                                                                                      currentLanguage === 'es' ? '' :
+                                                                                                      currentLanguage === 'ru' ? '' :
+                                                                                                      ''}`);
             });
             
-            // 초기 UI 텍스트 설정 (약간의 지연을 두어 DOM이 완전히 로드된 후 실행)
-            setTimeout(() => {
-                updateUITexts();
-                console.log(`🌍 초기 언어 설정 완료: ${currentLanguage}`);
-            }, 100);
+            // 초기 UI 텍스트 설정
+            updateUITexts();
             
             // 슬라이더 이벤트
             ['wind_speed', 'wind_direction', 'latitude', 'depth'].forEach(id => {
@@ -3006,79 +2699,14 @@
             console.log("📊 파이썬 스타일 시각화가 준비되었습니다.");
             console.log("🌗 자동 다크/라이트 모드 전환이 활성화되었습니다.");
             console.log("📱 반응형 디자인 (데스크톱/태블릿/모바일) 지원");
-            console.log(`🌍 다중언어 지원 활성화 (현재: ${currentLanguage})`);
+            const multiLangMessage = currentLanguage === 'ko' ? `🌍 다중언어 지원 활성화 (현재: ${currentLanguage})` :
+                                    currentLanguage === 'zh' ? `🌍 多语言支持已激活 (当前: ${currentLanguage})` :
+                                    currentLanguage === 'ja' ? `🌍 多言語サポートが有効 (現在: ${currentLanguage})` :
+                                    currentLanguage === 'es' ? `🌍 Soporte multiidioma activado (actual: ${currentLanguage})` :
+                                    currentLanguage === 'ru' ? `🌍 Поддержка многоязычности активирована (текущий: ${currentLanguage})` :
+                                    `🌍 Multi-language support activated (current: ${currentLanguage})`;
+            console.log(multiLangMessage);
         });
-        
-        // 언어 강제 업데이트 함수 (디버깅 및 수동 업데이트용)
-        function forceUpdateLanguage(lang = currentLanguage) {
-            currentLanguage = lang;
-            localStorage.setItem('ekman_language', lang);
-            
-            // 언어 선택 드롭다운 업데이트
-            const languageSelect = document.getElementById('language');
-            if (languageSelect) {
-                languageSelect.value = lang;
-            }
-            
-            // UI 텍스트 강제 업데이트
-            updateUITexts();
-            
-            // 차트가 있다면 다시 그리기
-            if (currentResults) {
-                const visType = document.querySelector('input[name="vis_type"]:checked').value;
-                let plotData;
-                let config;
-                
-                if (isMobile()) {
-                    if (visType === '3d') {
-                        plotData = create3DPlot(currentResults);
-                    } else {
-                        plotData = createMobile2DPlot(currentResults);
-                    }
-                    config = {
-                        displayModeBar: true,
-                        displaylogo: false,
-                        responsive: true,
-                        scrollZoom: true,
-                        doubleClick: 'reset',
-                        touchAction: 'auto'
-                    };
-                } else if (isTablet()) {
-                    if (visType === '3d') {
-                        plotData = create3DPlot(currentResults);
-                    } else {
-                        plotData = create2DPlot(currentResults);
-                    }
-                    config = {
-                        displayModeBar: true,
-                        displaylogo: false,
-                        responsive: true
-                    };
-                } else {
-                    if (visType === '3d') {
-                        plotData = create3DPlot(currentResults);
-                    } else {
-                        plotData = create2DPlot(currentResults);
-                    }
-                    config = {
-                        displayModeBar: true,
-                        displaylogo: false,
-                        responsive: true
-                    };
-                }
-                
-                document.getElementById('plot-area').innerHTML = '';
-                Plotly.newPlot('plot-area', plotData.data, plotData.layout, config);
-            }
-            
-            console.log(`🌍 언어 강제 업데이트 완료: ${lang}`);
-            console.log("💡 브라우저 콘솔에서 forceUpdateLanguage('ru') 같은 형식으로 언어를 변경할 수 있습니다.");
-        }
-        
-        // 전역 함수로 등록 (브라우저 콘솔에서 사용 가능)
-        window.forceUpdateLanguage = forceUpdateLanguage;
-        
-        // 전역 변수
     </script>
 </body>
 </html> 
