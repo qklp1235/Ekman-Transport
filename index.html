@@ -275,6 +275,279 @@
             height: 100% !important;
         }
         
+        /* 모바일 햄버거 메뉴 */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: var(--button-bg);
+            border: 1px outset var(--border-color);
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+        
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        
+        /* 태블릿 스타일 (768px - 1024px) */
+        @media screen and (max-width: 1024px) and (min-width: 768px) {
+            .control-frame {
+                width: 280px;
+                font-size: 8pt;
+            }
+            
+            .tk-button {
+                font-size: 7pt;
+                padding: 3px 6px;
+                min-width: 50px;
+            }
+            
+            .tk-scale {
+                width: 160px;
+                height: 18px;
+            }
+            
+            .labelframe-title {
+                font-size: 8pt;
+            }
+            
+            .tk-label {
+                font-size: 7pt;
+            }
+            
+            .slider-value {
+                font-size: 7pt;
+            }
+            
+            .results-grid {
+                font-size: 7pt;
+            }
+            
+            #plot-area {
+                min-height: calc(100vh - 100px);
+            }
+        }
+        
+        /* 모바일 스타일 (< 768px) */
+        @media screen and (max-width: 767px) {
+            body {
+                padding: 0;
+                font-size: 8pt;
+            }
+            
+            .title-bar {
+                padding: 6px;
+                font-size: 9pt;
+                text-align: center;
+            }
+            
+            .main-window {
+                flex-direction: column;
+                min-height: calc(100vh - 40px);
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .control-frame {
+                width: 100%;
+                position: fixed;
+                top: 0;
+                left: -100%;
+                height: 100vh;
+                background: var(--bg-primary);
+                z-index: 1001;
+                padding: 60px 15px 15px 15px;
+                overflow-y: auto;
+                transition: left 0.3s ease;
+                border-right: 2px solid var(--border-color);
+            }
+            
+            .control-frame.active {
+                left: 0;
+            }
+            
+            .mobile-menu-overlay.active {
+                display: block;
+            }
+            
+            .plot-frame {
+                width: 100%;
+                margin: 5px;
+                padding: 5px;
+                min-height: calc(100vh - 60px);
+            }
+            
+            /* 모바일 최적화 컨트롤 */
+            .labelframe {
+                margin: 6px 0;
+                padding: 6px;
+                border: 1px solid var(--border-color);
+            }
+            
+            .labelframe-title {
+                font-size: 9pt;
+                font-weight: bold;
+            }
+            
+            .tk-button {
+                font-size: 9pt;
+                padding: 8px 12px;
+                min-width: 70px;
+                margin: 3px;
+                touch-action: manipulation;
+            }
+            
+            .tk-scale {
+                width: 100%;
+                height: 25px;
+                margin: 6px 0;
+                touch-action: manipulation;
+            }
+            
+            .tk-scale::-webkit-slider-thumb {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .tk-combobox {
+                width: 100%;
+                font-size: 9pt;
+                padding: 8px;
+                touch-action: manipulation;
+            }
+            
+            .tk-label {
+                font-size: 9pt;
+                margin: 4px 0;
+            }
+            
+            .slider-value {
+                font-size: 9pt;
+                font-weight: bold;
+            }
+            
+            .button-group {
+                flex-wrap: wrap;
+                gap: 6px;
+                justify-content: center;
+            }
+            
+            .results-grid {
+                font-size: 8pt;
+                gap: 6px;
+            }
+            
+            .result-label {
+                font-weight: bold;
+            }
+            
+            .result-value {
+                font-size: 9pt;
+            }
+            
+            /* 모바일 그래프 최적화 */
+            #plot-area {
+                min-height: calc(100vh - 80px);
+                width: 100%;
+            }
+        }
+        
+        /* 초소형 모바일 (< 480px) */
+        @media screen and (max-width: 479px) {
+            .control-frame {
+                padding: 50px 10px 10px 10px;
+            }
+            
+            .tk-button {
+                font-size: 8pt;
+                padding: 6px 10px;
+                min-width: 60px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .button-group .tk-button {
+                width: 100%;
+                margin: 2px 0;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .result-label {
+                text-align: center;
+                padding-right: 0;
+                margin-bottom: 2px;
+            }
+            
+            .result-value {
+                text-align: center;
+                margin-bottom: 8px;
+                font-weight: bold;
+            }
+        }
+        
+        /* 가로 모드 모바일 최적화 */
+        @media screen and (max-width: 767px) and (orientation: landscape) {
+            .main-window {
+                flex-direction: row;
+            }
+            
+            .control-frame {
+                width: 300px;
+                height: 100vh;
+                position: fixed;
+                top: 0;
+                left: -300px;
+            }
+            
+            .plot-frame {
+                min-height: calc(100vh - 20px);
+                margin-left: 10px;
+            }
+        }
+        
+        /* 터치 디바이스 최적화 */
+        @media (hover: none) and (pointer: coarse) {
+            .tk-button:hover {
+                background: var(--button-bg);
+            }
+            
+            .tk-button:active {
+                background: var(--button-active);
+                transform: scale(0.98);
+            }
+            
+            .tk-scale::-webkit-slider-thumb {
+                cursor: grab;
+            }
+            
+            .tk-scale::-webkit-slider-thumb:active {
+                cursor: grabbing;
+                transform: scale(1.2);
+            }
+        }
+        
         /* 테마 전환 애니메이션 */
         * {
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
@@ -283,6 +556,10 @@
 </head>
 <body>
     <div class="title-bar">Ekman Transport Visualizer</div>
+    
+    <!-- 모바일 햄버거 메뉴 -->
+    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+    <div class="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
     
     <div class="main-window">
         <!-- 왼쪽 제어 패널 (Tkinter GUI와 동일한 레이아웃) -->
@@ -541,6 +818,135 @@
                 grid: dark ? '#404040' : 'lightgray',
                 font: dark ? '#e0e0e0' : '#333333'
             };
+        }
+        
+        // 모바일 디바이스 감지
+        function isMobile() {
+            return window.innerWidth <= 767;
+        }
+        
+        // 태블릿 디바이스 감지
+        function isTablet() {
+            return window.innerWidth > 767 && window.innerWidth <= 1024;
+        }
+        
+        // 모바일 메뉴 토글
+        function toggleMobileMenu() {
+            const controlFrame = document.querySelector('.control-frame');
+            const overlay = document.querySelector('.mobile-menu-overlay');
+            
+            controlFrame.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+        
+        // 모바일 메뉴 닫기
+        function closeMobileMenu() {
+            const controlFrame = document.querySelector('.control-frame');
+            const overlay = document.querySelector('.mobile-menu-overlay');
+            
+            controlFrame.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+        
+        // 모바일 최적화 2D 시각화 생성 (간단한 단일 차트)
+        function createMobile2DPlot(results) {
+            const colors = getThemeColors();
+            const traces = [];
+            
+            // 모바일에서는 가장 중요한 정보만 간단히 표시
+            // 에크만 나선 + 바람 벡터를 하나의 차트로
+            
+            // 1. 에크만 나선
+            traces.push({
+                x: results.uVel, 
+                y: results.vVel,
+                mode: 'lines+markers',
+                line: {color: '#FF4081', width: 4},
+                marker: {
+                    size: 8,
+                    color: results.zLevels,
+                    colorscale: 'Viridis',
+                    showscale: true,
+                    colorbar: {
+                        title: {text: "깊이 (m)", font: {color: colors.text, size: 14}},
+                        bgcolor: colors.background,
+                        bordercolor: colors.grid,
+                        tickfont: {color: colors.text, size: 12},
+                        len: 0.6,
+                        thickness: 20,
+                        x: 1.02
+                    }
+                },
+                name: '에크만 나선',
+                hovertemplate: '깊이: %{marker.color:.1f}m<br>U: %{x:.4f}, V: %{y:.4f} m/s<extra></extra>'
+            });
+            
+            // 2. 바람 벡터 (스케일 조정)
+            const windDirRad = results.windDirection * Math.PI / 180;
+            const windScale = Math.max(...results.uVel.map(Math.abs), ...results.vVel.map(Math.abs)) * 0.5;
+            const windX = windScale * Math.cos(windDirRad);
+            const windY = windScale * Math.sin(windDirRad);
+            
+            traces.push({
+                x: [0, windX], 
+                y: [0, windY],
+                mode: 'lines+markers',
+                line: {color: '#FF6B35', width: 6},
+                marker: {size: 15, symbol: 'arrow', color: '#FF6B35'},
+                name: `🌬️ 바람 ${results.windSpeed.toFixed(1)} m/s`,
+                hovertemplate: `바람속도: ${results.windSpeed.toFixed(1)} m/s<br>방향: ${results.windDirection.toFixed(0)}°<extra></extra>`
+            });
+            
+            // 3. 수송 벡터 (스케일 조정) 
+            const transportScale = windScale * 0.3;
+            traces.push({
+                x: [0, results.Mx * transportScale / Math.abs(results.Mx || 1)], 
+                y: [0, results.My * transportScale / Math.abs(results.My || 1)],
+                mode: 'lines+markers',
+                line: {color: '#4A9EFF', width: 5, dash: 'dash'},
+                marker: {size: 12, symbol: 'arrow', color: '#4A9EFF'},
+                name: `📊 수송 ${Math.sqrt(results.Mx**2 + results.My**2).toExponential(1)} m³/s`,
+                hovertemplate: `수송량: ${Math.sqrt(results.Mx**2 + results.My**2).toExponential(2)} m³/s<extra></extra>`
+            });
+            
+            const layout = {
+                title: {
+                    text: `🌊 에크만 수송 시각화<br>위도: ${results.latitude.toFixed(1)}°`,
+                    font: {color: colors.text, size: 16},
+                    x: 0.5,
+                    y: 0.95
+                },
+                xaxis: {
+                    title: {text: 'U 속도 (동-서, m/s)', font: {color: colors.text, size: 12}},
+                    gridcolor: colors.grid,
+                    tickfont: {color: colors.text, size: 11},
+                    linecolor: colors.grid,
+                    zeroline: true,
+                    zerolinecolor: colors.grid
+                },
+                yaxis: {
+                    title: {text: 'V 속도 (남-북, m/s)', font: {color: colors.text, size: 12}},
+                    gridcolor: colors.grid,
+                    tickfont: {color: colors.text, size: 11},
+                    linecolor: colors.grid,
+                    zeroline: true,
+                    zerolinecolor: colors.grid
+                },
+                height: 600,
+                showlegend: true,
+                legend: {
+                    font: {color: colors.text, size: 11},
+                    bgcolor: 'rgba(0,0,0,0)',
+                    x: 0.02,
+                    y: 0.98
+                },
+                font: {size: 11, color: colors.text},
+                plot_bgcolor: colors.background,
+                paper_bgcolor: colors.paper,
+                margin: {l: 60, r: 80, t: 80, b: 60}
+            };
+            
+            return {data: traces, layout: layout};
         }
         
         // 2D 시각화 생성
@@ -851,32 +1257,92 @@
                 const visType = document.querySelector('input[name="vis_type"]:checked').value;
                 
                 let plotData;
-                if (visType === '3d') {
-                    plotData = create3DPlot(results);
-                } else {
-                    plotData = create2DPlot(results);
-                }
+                let config;
                 
-                const config = {
-                    displayModeBar: true,
-                    displaylogo: false,
-                    responsive: true,
-                    modeBarButtonsToAdd: ['downloadpng'],
-                    toImageButtonOptions: {
-                        format: 'png',
-                        filename: 'ekman_transport_plot',
-                        height: 1000,
-                        width: 1600,
-                        scale: 2
+                if (isMobile()) {
+                    // 모바일 최적화
+                    if (visType === '3d') {
+                        plotData = create3DPlot(results);
+                    } else {
+                        plotData = createMobile2DPlot(results);
                     }
-                };
+                    
+                    config = {
+                        displayModeBar: true,
+                        displaylogo: false,
+                        responsive: true,
+                        scrollZoom: true,
+                        modeBarButtonsToRemove: ['pan2d', 'lasso2d', 'select2d'],
+                        modeBarButtonsToAdd: ['downloadpng'],
+                        toImageButtonOptions: {
+                            format: 'png',
+                            filename: 'ekman_transport_mobile',
+                            height: 800,
+                            width: 600,
+                            scale: 2
+                        },
+                        // 모바일 터치 최적화
+                        doubleClick: 'reset',
+                        touchAction: 'auto'
+                    };
+                    
+                    // 모바일에서 계산 후 메뉴 자동 닫기
+                    setTimeout(() => {
+                        closeMobileMenu();
+                    }, 500);
+                    
+                } else if (isTablet()) {
+                    // 태블릿 최적화
+                    if (visType === '3d') {
+                        plotData = create3DPlot(results);
+                    } else {
+                        plotData = create2DPlot(results);
+                    }
+                    
+                    config = {
+                        displayModeBar: true,
+                        displaylogo: false,
+                        responsive: true,
+                        modeBarButtonsToAdd: ['downloadpng'],
+                        toImageButtonOptions: {
+                            format: 'png',
+                            filename: 'ekman_transport_tablet',
+                            height: 900,
+                            width: 1200,
+                            scale: 2
+                        }
+                    };
+                    
+                } else {
+                    // 데스크톱 (기존)
+                    if (visType === '3d') {
+                        plotData = create3DPlot(results);
+                    } else {
+                        plotData = create2DPlot(results);
+                    }
+                    
+                    config = {
+                        displayModeBar: true,
+                        displaylogo: false,
+                        responsive: true,
+                        modeBarButtonsToAdd: ['downloadpng'],
+                        toImageButtonOptions: {
+                            format: 'png',
+                            filename: 'ekman_transport_plot',
+                            height: 1000,
+                            width: 1600,
+                            scale: 2
+                        }
+                    };
+                }
                 
                 document.getElementById('plot-area').innerHTML = '';
                 Plotly.newPlot('plot-area', plotData.data, plotData.layout, config);
                 
-                // 화면 크기 변경 시 자동 리사이즈
+                // 화면 크기 변경 시 자동 리사이즈 및 레이아웃 재구성
                 window.addEventListener('resize', function() {
                     Plotly.Plots.resize('plot-area');
+                    handleWindowResize();
                 });
                 
                 updateResultsDisplay(results);
@@ -935,40 +1401,70 @@
             console.log(JSON.stringify(exportData, null, 2));
         }
         
-        // 테마 변경 감지 및 차트 업데이트
+                // 테마 변경 감지 및 차트 업데이트 (디바이스별 최적화)
         function handleThemeChange() {
             if (currentResults) {
-                // 기존 차트가 있으면 업데이트
                 const visType = document.querySelector('input[name="vis_type"]:checked').value;
                 let plotData;
+                let config;
                 
-                if (visType === '3d') {
-                    plotData = create3DPlot(currentResults);
+                // 디바이스별 차트 선택
+                if (isMobile()) {
+                    if (visType === '3d') {
+                        plotData = create3DPlot(currentResults);
+                    } else {
+                        plotData = createMobile2DPlot(currentResults);
+                    }
+                    config = {
+                        displayModeBar: true,
+                        displaylogo: false,
+                        responsive: true,
+                        scrollZoom: true,
+                        doubleClick: 'reset',
+                        touchAction: 'auto'
+                    };
+                } else if (isTablet()) {
+                    if (visType === '3d') {
+                        plotData = create3DPlot(currentResults);
+                    } else {
+                        plotData = create2DPlot(currentResults);
+                    }
+                    config = {
+                        displayModeBar: true,
+                        displaylogo: false,
+                        responsive: true
+                    };
                 } else {
-                    plotData = create2DPlot(currentResults);
+                    if (visType === '3d') {
+                        plotData = create3DPlot(currentResults);
+                    } else {
+                        plotData = create2DPlot(currentResults);
+                    }
+                    config = {
+                        displayModeBar: true,
+                        displaylogo: false,
+                        responsive: true
+                    };
                 }
                 
-                const config = {
-                    displayModeBar: true,
-                    displaylogo: false,
-                    modeBarButtonsToAdd: ['downloadpng'],
-                    toImageButtonOptions: {
-                        format: 'png',
-                        filename: 'ekman_transport_plot',
-                        height: 800,
-                        width: 1200,
-                        scale: 2
-                    }
-                };
+                Plotly.newPlot('plot-area', plotData.data, plotData.layout, config);
                 
-                                 Plotly.newPlot('plot-area', plotData.data, plotData.layout, config);
-                 
-                 // 차트 리사이즈 적용
-                 setTimeout(() => {
-                     Plotly.Plots.resize('plot-area');
-                 }, 100);
-                 
-                 console.log("🎨 테마 변경에 따라 차트가 업데이트되었습니다!");
+                // 차트 리사이즈 적용
+                setTimeout(() => {
+                    Plotly.Plots.resize('plot-area');
+                }, 100);
+                
+                console.log(`🎨 테마 변경 - ${isMobile() ? '모바일' : isTablet() ? '태블릿' : '데스크톱'} 최적화 적용!`);
+            }
+        }
+        
+        // 윈도우 리사이즈 감지 및 적응형 레이아웃
+        function handleWindowResize() {
+            if (currentResults) {
+                // 디바이스 타입이 변경되었을 때 차트 재구성
+                setTimeout(() => {
+                    handleThemeChange();
+                }, 200);
             }
         }
         
@@ -995,10 +1491,29 @@
             document.querySelectorAll('input[name="vis_type"]').forEach(radio => {
                 radio.addEventListener('change', function() {
                     if (currentResults) {
-                        handleThemeChange(); // 테마에 맞게 다시 렌더링
+                        handleThemeChange(); // 디바이스별 최적화된 차트 렌더링
                     }
                 });
             });
+            
+            // 윈도우 리사이즈 이벤트 (디바이스 변경 감지)
+            window.addEventListener('resize', handleWindowResize);
+            
+            // 모바일 터치 이벤트 최적화
+            if (isMobile()) {
+                // 모바일에서 드래그 시 페이지 스크롤 방지
+                document.addEventListener('touchmove', function(e) {
+                    if (e.target.closest('#plot-area')) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+                
+                console.log("📱 모바일 최적화 모드 활성화");
+            } else if (isTablet()) {
+                console.log("📱 태블릿 최적화 모드 활성화");
+            } else {
+                console.log("🖥️ 데스크톱 모드 활성화");
+            }
             
             // 초기값 설정
             updateSliderValues();
@@ -1006,6 +1521,7 @@
             console.log("🌊 Ekman Transport Visualizer 로드 완료!");
             console.log("📊 파이썬 스타일 시각화가 준비되었습니다.");
             console.log("🌗 자동 다크/라이트 모드 전환이 활성화되었습니다.");
+            console.log("📱 반응형 디자인 (데스크톱/태블릿/모바일) 지원");
         });
     </script>
 </body>
