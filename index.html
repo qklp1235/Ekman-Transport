@@ -68,7 +68,8 @@
             background-color: var(--bg-primary);
             border-right: 1px solid var(--border-color);
             padding: 10px;
-            overflow-x: auto;
+            overflow-y: auto;
+            overflow-x: hidden;
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
         
@@ -727,6 +728,7 @@
         
         /* 초소형 모바일 (< 480px) */
         @media screen and (max-width: 479px) {
+            
             .control-frame {
                 padding: 50px 10px 10px 10px;
             }
