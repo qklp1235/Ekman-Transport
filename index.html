@@ -405,7 +405,7 @@
             
             /* 메뉴 헤더 */
             .mobile-menu-header {
-                position: absolute;
+            position: absolute;
                 top: 0;
                 left: 0;
                 right: 0;
@@ -421,9 +421,9 @@
             }
             
             .mobile-menu-title {
-                font-size: 18px;
+            font-size: 18px;
                 font-weight: bold;
-                color: var(--text-primary);
+            color: var(--text-primary);
                 margin: 0;
             }
             
@@ -437,15 +437,15 @@
                 cursor: pointer;
                 position: relative;
                 transition: all 0.3s ease;
-                touch-action: manipulation;
-            }
-            
-            .mobile-menu-close:hover {
-                background: var(--button-hover);
+            touch-action: manipulation;
+        }
+        
+        .mobile-menu-close:hover {
+            background: var(--button-hover);
                 transform: rotate(90deg);
-            }
-            
-            .mobile-menu-close:active {
+        }
+        
+        .mobile-menu-close:active {
                 transform: rotate(90deg) scale(0.9);
             }
             
@@ -480,7 +480,7 @@
             .mobile-menu-panel.active .mobile-menu-item {
                 opacity: 1;
                 transform: translateX(0);
-            }
+        }
         
             /* 스태거드 애니메이션 지연 */
             .mobile-menu-panel.active .mobile-menu-item:nth-child(1) { transition-delay: 0.1s; }
@@ -1013,6 +1013,387 @@
     
     <!-- 에크만 수송 계산 및 시각화 JavaScript -->
     <script>
+        // 🌍 다중언어 지원 시스템
+        const translations = {
+            'en': {
+                // UI 요소들
+                'app_title': "Ekman Transport Visualizer",
+                'language_select': "🌐 Language Selection",
+                'param_settings': "🎛️ Parameter Settings",
+                'wind_speed': "🌬️ Wind Speed (m/s)",
+                'wind_direction': "🧭 Wind Direction (°)",
+                'latitude': "🌍 Latitude (°)",
+                'depth': "🌊 Depth (m)",
+                'vis_type': "📊 Visualization Type",
+                'vis_3d': "🔮 3D",
+                'vis_2d': "📈 2D",
+                'preset_settings': "⚡ Preset Settings",
+                'preset_normal': "🌤️ Normal",
+                'preset_strong': "💨 Strong Wind",
+                'preset_typhoon': "🌪️ Typhoon",
+                'location_select': "🗺️ Location Selection",
+                'calc_button': "🔄 Calculate & Visualize",
+                'export_button': "💾 Export",
+                'results_title': "📋 Calculation Results",
+                'wind_stress': "💨 Wind Stress:",
+                'ekman_depth': "📏 Ekman Depth:",
+                'total_transport': "🌊 Total Transport:",
+                'energy_transfer': "⚡ Energy Transfer:",
+                'calc_message': "Click Calculate & Visualize button",
+                
+                // 지역 선택
+                'loc_custom': "🎯 Custom Settings",
+                'loc_los_angeles': "🇺🇸 Los Angeles",
+                'loc_busan': "🇰🇷 Busan",
+                'loc_north_pacific': "🌊 North Pacific",
+                'loc_north_atlantic': "🌊 North Atlantic", 
+                'loc_southern_ocean': "🧊 Southern Ocean",
+                'loc_equator': "🔆 Equator",
+                
+                // 차트 제목
+                'chart_title_3d': "🌊 3D Ekman Transport Visualization",
+                'chart_title_2d': "🌊 Ekman Transport Visualization",
+                'chart_title_mobile': "🌊 Ekman Transport Visualization"
+            },
+            'ko': {
+                // UI 요소들
+                'app_title': "에크만 수송 시각화",
+                'language_select': "🌐 언어 선택",
+                'param_settings': "🎛️ 파라미터 설정",
+                'wind_speed': "🌬️ 바람 속도 (m/s)",
+                'wind_direction': "🧭 바람 방향 (°)",
+                'latitude': "🌍 위도 (°)",
+                'depth': "🌊 깊이 (m)",
+                'vis_type': "📊 시각화 타입",
+                'vis_3d': "🔮 3D",
+                'vis_2d': "📈 2D",
+                'preset_settings': "⚡ 사전 설정",
+                'preset_normal': "🌤️ 일반",
+                'preset_strong': "💨 강풍",
+                'preset_typhoon': "🌪️ 태풍",
+                'location_select': "🗺️ 지역 선택",
+                'calc_button': "🔄 계산 및 시각화",
+                'export_button': "💾 내보내기",
+                'results_title': "📋 계산 결과",
+                'wind_stress': "💨 바람 응력:",
+                'ekman_depth': "📏 에크만 깊이:",
+                'total_transport': "🌊 총 수송량:",
+                'energy_transfer': "⚡ 에너지 전달률:",
+                'calc_message': "계산 및 시각화 버튼을 클릭하세요",
+                
+                // 지역 선택
+                'loc_custom': "🎯 사용자 설정",
+                'loc_los_angeles': "🇺🇸 로스앤젤레스",
+                'loc_busan': "🇰🇷 부산",
+                'loc_north_pacific': "🌊 북태평양",
+                'loc_north_atlantic': "🌊 북대서양",
+                'loc_southern_ocean': "🧊 남극해",
+                'loc_equator': "🔆 적도",
+                
+                // 차트 제목
+                'chart_title_3d': "🌊 3D 에크만 수송 시각화",
+                'chart_title_2d': "🌊 에크만 수송 시각화",
+                'chart_title_mobile': "🌊 에크만 수송 시각화"
+            },
+            'zh': {
+                // UI 요소들
+                'app_title': "埃克曼输运可视化",
+                'language_select': "🌐 语言选择",
+                'param_settings': "🎛️ 参数设置",
+                'wind_speed': "🌬️ 风速 (m/s)",
+                'wind_direction': "🧭 风向 (°)",
+                'latitude': "🌍 纬度 (°)",
+                'depth': "🌊 深度 (m)",
+                'vis_type': "📊 可视化类型",
+                'vis_3d': "🔮 3D",
+                'vis_2d': "📈 2D",
+                'preset_settings': "⚡ 预设设置",
+                'preset_normal': "🌤️ 正常",
+                'preset_strong': "💨 强风",
+                'preset_typhoon': "🌪️ 台风",
+                'location_select': "🗺️ 位置选择",
+                'calc_button': "🔄 计算与可视化",
+                'export_button': "💾 导出",
+                'results_title': "📋 计算结果",
+                'wind_stress': "💨 风应力:",
+                'ekman_depth': "📏 埃克曼深度:",
+                'total_transport': "🌊 总输运量:",
+                'energy_transfer': "⚡ 能量传输率:",
+                'calc_message': "点击计算与可视化按钮",
+                
+                // 地区选择
+                'loc_custom': "🎯 自定义设置",
+                'loc_los_angeles': "🇺🇸 洛杉矶",
+                'loc_busan': "🇰🇷 釜山",
+                'loc_north_pacific': "🌊 北太平洋",
+                'loc_north_atlantic': "🌊 北大西洋",
+                'loc_southern_ocean': "🧊 南极海",
+                'loc_equator': "🔆 赤道",
+                
+                // 图表标题
+                'chart_title_3d': "🌊 3D 埃克曼输运可视化",
+                'chart_title_2d': "🌊 埃克曼输运可视化",
+                'chart_title_mobile': "🌊 埃克曼输运可视化"
+            },
+            'ja': {
+                // UI 요소들
+                'app_title': "エクマン輸送可視化",
+                'language_select': "🌐 言語選択",
+                'param_settings': "🎛️ パラメータ設定",
+                'wind_speed': "🌬️ 風速 (m/s)",
+                'wind_direction': "🧭 風向 (°)",
+                'latitude': "🌍 緯度 (°)",
+                'depth': "🌊 深度 (m)",
+                'vis_type': "📊 可視化タイプ",
+                'vis_3d': "🔮 3D",
+                'vis_2d': "📈 2D",
+                'preset_settings': "⚡ プリセット設定",
+                'preset_normal': "🌤️ 通常",
+                'preset_strong': "💨 強風",
+                'preset_typhoon': "🌪️ 台風",
+                'location_select': "🗺️ 場所選択",
+                'calc_button': "🔄 計算と可視化",
+                'export_button': "💾 エクスポート",
+                'results_title': "📋 計算結果",
+                'wind_stress': "💨 風応力:",
+                'ekman_depth': "📏 エクマン深度:",
+                'total_transport': "🌊 総輸送量:",
+                'energy_transfer': "⚡ エネルギー伝達率:",
+                'calc_message': "計算と可視化ボタンをクリックしてください",
+                
+                // 地域選択
+                'loc_custom': "🎯 カスタム設定",
+                'loc_los_angeles': "🇺🇸 ロサンゼルス",
+                'loc_busan': "🇰🇷 釜山",
+                'loc_north_pacific': "🌊 北太平洋",
+                'loc_north_atlantic': "🌊 北大西洋",
+                'loc_southern_ocean': "🧊 南極海",
+                'loc_equator': "🔆 赤道",
+                
+                // チャートタイトル
+                'chart_title_3d': "🌊 3D エクマン輸送可視化",
+                'chart_title_2d': "🌊 エクマン輸送可視化",
+                'chart_title_mobile': "🌊 エクマン輸送可視化"
+            },
+            'es': {
+                // UI 요소들
+                'app_title': "Visualizador de Transporte de Ekman",
+                'language_select': "🌐 Selección de Idioma",
+                'param_settings': "🎛️ Configuración de Parámetros",
+                'wind_speed': "🌬️ Velocidad del Viento (m/s)",
+                'wind_direction': "🧭 Dirección del Viento (°)",
+                'latitude': "🌍 Latitud (°)",
+                'depth': "🌊 Profundidad (m)",
+                'vis_type': "📊 Tipo de Visualización",
+                'vis_3d': "🔮 3D",
+                'vis_2d': "📈 2D",
+                'preset_settings': "⚡ Configuración Predefinida",
+                'preset_normal': "🌤️ Normal",
+                'preset_strong': "💨 Viento Fuerte",
+                'preset_typhoon': "🌪️ Tifón",
+                'location_select': "🗺️ Selección de Ubicación",
+                'calc_button': "🔄 Calcular y Visualizar",
+                'export_button': "💾 Exportar",
+                'results_title': "📋 Resultados del Cálculo",
+                'wind_stress': "💨 Esfuerzo del Viento:",
+                'ekman_depth': "📏 Profundidad de Ekman:",
+                'total_transport': "🌊 Transporte Total:",
+                'energy_transfer': "⚡ Transferencia de Energía:",
+                'calc_message': "Haga clic en Calcular y Visualizar",
+                
+                // Selección de región
+                'loc_custom': "🎯 Configuración Personalizada",
+                'loc_los_angeles': "🇺🇸 Los Ángeles",
+                'loc_busan': "🇰🇷 Busan",
+                'loc_north_pacific': "🌊 Pacífico Norte",
+                'loc_north_atlantic': "🌊 Atlántico Norte",
+                'loc_southern_ocean': "🧊 Océano Austral",
+                'loc_equator': "🔆 Ecuador",
+                
+                // Títulos de gráficos
+                'chart_title_3d': "🌊 Visualización 3D del Transporte de Ekman",
+                'chart_title_2d': "🌊 Visualización del Transporte de Ekman",
+                'chart_title_mobile': "🌊 Visualización del Transporte de Ekman"
+            },
+            'ru': {
+                // UI 요소들
+                'app_title': "Визуализатор Переноса Экмана",
+                'language_select': "🌐 Выбор Языка",
+                'param_settings': "🎛️ Настройки Параметров",
+                'wind_speed': "🌬️ Скорость Ветра (м/с)",
+                'wind_direction': "🧭 Направление Ветра (°)",
+                'latitude': "🌍 Широта (°)",
+                'depth': "🌊 Глубина (м)",
+                'vis_type': "📊 Тип Визуализации",
+                'vis_3d': "🔮 3D",
+                'vis_2d': "📈 2D",
+                'preset_settings': "⚡ Предустановки",
+                'preset_normal': "🌤️ Обычно",
+                'preset_strong': "💨 Сильный Ветер",
+                'preset_typhoon': "🌪️ Тайфун",
+                'location_select': "🗺️ Выбор Местоположения",
+                'calc_button': "🔄 Рассчитать и Визуализировать",
+                'export_button': "💾 Экспорт",
+                'results_title': "📋 Результаты Расчета",
+                'wind_stress': "💨 Напряжение Ветра:",
+                'ekman_depth': "📏 Глубина Экмана:",
+                'total_transport': "🌊 Общий Перенос:",
+                'energy_transfer': "⚡ Передача Энергии:",
+                'calc_message': "Нажмите Рассчитать и Визуализировать",
+                
+                // Выбор региона
+                'loc_custom': "🎯 Пользовательские Настройки",
+                'loc_los_angeles': "🇺🇸 Лос-Анджелес",
+                'loc_busan': "🇰🇷 Пусан",
+                'loc_north_pacific': "🌊 Северная часть Тихого океана",
+                'loc_north_atlantic': "🌊 Северная Атлантика",
+                'loc_southern_ocean': "🧊 Южный океан",
+                'loc_equator': "🔆 Экватор",
+                
+                // Заголовки графиков
+                'chart_title_3d': "🌊 3D Визуализация Переноса Экмана",
+                'chart_title_2d': "🌊 Визуализация Переноса Экмана",
+                'chart_title_mobile': "🌊 Визуализация Переноса Экмана"
+            }
+        };
+        
+        // 현재 언어 설정 (기본값: 한국어)
+        let currentLanguage = localStorage.getItem('ekman_language') || 'ko';
+        
+        // 번역 함수
+        function t(key) {
+            return translations[currentLanguage][key] || translations['en'][key] || key;
+        }
+        
+        // UI 텍스트 업데이트 함수
+        function updateUITexts() {
+            // 제목 바
+            document.querySelector('.title-bar').textContent = t('app_title');
+            document.querySelector('.mobile-menu-title').textContent = '⚙️ ' + t('app_title').replace('Ekman Transport Visualizer', '제어판').replace('Ekman Transport Visualizer', 'Control Panel').replace('埃克曼输运可视化', '控制面板').replace('エクマン輸送可視化', 'コントロールパネル').replace('Visualizador de Transporte de Ekman', 'Panel de Control').replace('Визуализатор Переноса Экмана', 'Панель Управления');
+            
+            // 라벨프레임 제목들
+            document.querySelectorAll('.labelframe-title').forEach((element, index) => {
+                const titles = [
+                    'language_select',
+                    'param_settings', 
+                    'vis_type',
+                    'preset_settings',
+                    'location_select',
+                    '', // 버튼 그룹
+                    'results_title'
+                ];
+                if (titles[index]) {
+                    element.textContent = t(titles[index]);
+                }
+            });
+            
+            // 슬라이더 라벨들
+            document.querySelector('label[for="wind_speed"]').textContent = t('wind_speed') + ':';
+            document.querySelector('label[for="wind_direction"]').textContent = t('wind_direction') + ':';
+            document.querySelector('label[for="latitude"]').textContent = t('latitude') + ':';
+            document.querySelector('label[for="depth"]').textContent = t('depth') + ':';
+            
+            // 라디오 버튼 라벨들
+            document.querySelector('label[for="vis_3d"]').textContent = t('vis_3d');
+            document.querySelector('label[for="vis_2d"]').textContent = t('vis_2d');
+            
+            // 버튼들
+            document.querySelectorAll('.tk-button').forEach(button => {
+                const text = button.textContent.trim();
+                if (text.includes('일반') || text.includes('Normal') || text.includes('正常') || text.includes('通常') || text.includes('Обычно')) {
+                    button.textContent = t('preset_normal');
+                } else if (text.includes('강풍') || text.includes('Strong Wind') || text.includes('强风') || text.includes('強風') || text.includes('Viento Fuerte') || text.includes('Сильный Ветер')) {
+                    button.textContent = t('preset_strong');
+                } else if (text.includes('태풍') || text.includes('Typhoon') || text.includes('台风') || text.includes('台風') || text.includes('Tifón') || text.includes('Тайфун')) {
+                    button.textContent = t('preset_typhoon');
+                } else if (text.includes('계산') || text.includes('Calculate') || text.includes('计算') || text.includes('計算') || text.includes('Calcular') || text.includes('Рассчитать')) {
+                    button.textContent = t('calc_button');
+                } else if (text.includes('내보내기') || text.includes('Export') || text.includes('导出') || text.includes('エクスポート') || text.includes('Exportar') || text.includes('Экспорт')) {
+                    button.textContent = t('export_button');
+                }
+            });
+            
+            // 결과 라벨들
+            document.querySelectorAll('.result-label').forEach((element, index) => {
+                const labels = ['wind_stress', 'ekman_depth', 'total_transport', 'energy_transfer'];
+                if (labels[index]) {
+                    element.textContent = t(labels[index]);
+                }
+            });
+            
+            // 지역 선택 옵션들
+            const locationOptions = document.querySelectorAll('#location option');
+            const locationKeys = ['loc_custom', 'loc_los_angeles', 'loc_busan', 'loc_north_pacific', 'loc_north_atlantic', 'loc_southern_ocean', 'loc_equator'];
+            locationOptions.forEach((option, index) => {
+                if (locationKeys[index]) {
+                    option.textContent = t(locationKeys[index]);
+                }
+            });
+            
+            // 플롯 영역 기본 메시지
+            const plotMessage = document.querySelector('#plot-area > div > p');
+            if (plotMessage) {
+                plotMessage.textContent = t('calc_message');
+            }
+            
+            console.log(`🌍 언어가 ${currentLanguage}로 변경되었습니다.`);
+        }
+        
+        // 언어 변경 함수
+        function changeLanguage(newLanguage) {
+            currentLanguage = newLanguage;
+            localStorage.setItem('ekman_language', newLanguage);
+            updateUITexts();
+            
+            // 차트가 이미 생성되어 있다면 다시 그리기
+            if (currentResults) {
+                const visType = document.querySelector('input[name="vis_type"]:checked').value;
+                let plotData;
+                let config;
+                
+                if (isMobile()) {
+                    if (visType === '3d') {
+                        plotData = create3DPlot(currentResults);
+                    } else {
+                        plotData = createMobile2DPlot(currentResults);
+                    }
+                    config = {
+                        displayModeBar: true,
+                        displaylogo: false,
+                        responsive: true,
+                        scrollZoom: true,
+                        doubleClick: 'reset',
+                        touchAction: 'auto'
+                    };
+                } else if (isTablet()) {
+                    if (visType === '3d') {
+                        plotData = create3DPlot(currentResults);
+                    } else {
+                        plotData = create2DPlot(currentResults);
+                    }
+                    config = {
+                        displayModeBar: true,
+                        displaylogo: false,
+                        responsive: true
+                    };
+                } else {
+                    if (visType === '3d') {
+                        plotData = create3DPlot(currentResults);
+                    } else {
+                        plotData = create2DPlot(currentResults);
+                    }
+                    config = {
+                        displayModeBar: true,
+                        displaylogo: false,
+                        responsive: true
+                    };
+                }
+                
+                document.getElementById('plot-area').innerHTML = '';
+                Plotly.newPlot('plot-area', plotData.data, plotData.layout, config);
+            }
+        }
+        
         // 전역 변수
         let currentResults = null;
         
@@ -1174,8 +1555,8 @@
                 if (navigator.vibrate) {
                     navigator.vibrate(50);
                 }
-                
-                // 메뉴가 열렸을 때 포커스 설정 (접근성 개선)
+            
+            // 메뉴가 열렸을 때 포커스 설정 (접근성 개선)
                 setTimeout(() => {
                     const firstMenuItem = menuPanel.querySelector('.mobile-menu-item input, .mobile-menu-item select, .mobile-menu-item button');
                     if (firstMenuItem) firstMenuItem.focus();
@@ -1322,7 +1703,7 @@
                     colorscale: 'Viridis',
                     showscale: true,
                     colorbar: {
-                        title: {text: "깊이 (m)", font: {color: colors.text, size: 14}},
+                        title: {text: t('depth'), font: {color: colors.text, size: 14}},
                         bgcolor: colors.background,
                         bordercolor: colors.grid,
                         tickfont: {color: colors.text, size: 12},
@@ -1331,8 +1712,18 @@
                         x: 1.02
                     }
                 },
-                name: '에크만 나선',
-                hovertemplate: '깊이: %{marker.color:.1f}m<br>U: %{x:.4f}, V: %{y:.4f} m/s<extra></extra>'
+                name: currentLanguage === 'ko' ? '에크만 나선' :
+                      currentLanguage === 'zh' ? '埃克曼螺线' :
+                      currentLanguage === 'ja' ? 'エクマン螺旋' :
+                      currentLanguage === 'es' ? 'Espiral de Ekman' :
+                      currentLanguage === 'ru' ? 'Спираль Экмана' :
+                      'Ekman Spiral',
+                hovertemplate: `${currentLanguage === 'ko' ? '깊이' :
+                               currentLanguage === 'zh' ? '深度' :
+                               currentLanguage === 'ja' ? '深度' :
+                               currentLanguage === 'es' ? 'Profundidad' :
+                               currentLanguage === 'ru' ? 'Глубина' :
+                               'Depth'}: %{marker.color:.1f}m<br>U: %{x:.4f}, V: %{y:.4f} m/s<extra></extra>`
             });
             
             // 2. 바람 벡터 (스케일 조정)
@@ -1347,8 +1738,23 @@
                 mode: 'lines+markers',
                 line: {color: '#FF6B35', width: 6},
                 marker: {size: 15, symbol: 'arrow', color: '#FF6B35'},
-                name: `🌬️ 바람 ${results.windSpeed.toFixed(1)} m/s`,
-                hovertemplate: `바람속도: ${results.windSpeed.toFixed(1)} m/s<br>방향: ${results.windDirection.toFixed(0)}°<extra></extra>`
+                name: `🌬️ ${currentLanguage === 'ko' ? '바람' :
+                            currentLanguage === 'zh' ? '风' :
+                            currentLanguage === 'ja' ? '風' :
+                            currentLanguage === 'es' ? 'Viento' :
+                            currentLanguage === 'ru' ? 'Ветер' :
+                            'Wind'} ${results.windSpeed.toFixed(1)} m/s`,
+                hovertemplate: `${currentLanguage === 'ko' ? '바람속도' :
+                               currentLanguage === 'zh' ? '风速' :
+                               currentLanguage === 'ja' ? '風速' :
+                               currentLanguage === 'es' ? 'Velocidad del viento' :
+                               currentLanguage === 'ru' ? 'Скорость ветра' :
+                               'Wind speed'}: ${results.windSpeed.toFixed(1)} m/s<br>${currentLanguage === 'ko' ? '방향' :
+                                                                                    currentLanguage === 'zh' ? '方向' :
+                                                                                    currentLanguage === 'ja' ? '方向' :
+                                                                                    currentLanguage === 'es' ? 'Dirección' :
+                                                                                    currentLanguage === 'ru' ? 'Направление' :
+                                                                                    'Direction'}: ${results.windDirection.toFixed(0)}°<extra></extra>`
             });
             
             // 3. 수송 벡터 (스케일 조정) 
@@ -1359,19 +1765,39 @@
                 mode: 'lines+markers',
                 line: {color: '#4A9EFF', width: 5, dash: 'dash'},
                 marker: {size: 12, symbol: 'arrow', color: '#4A9EFF'},
-                name: `📊 수송 ${Math.sqrt(results.Mx**2 + results.My**2).toExponential(1)} m³/s`,
-                hovertemplate: `수송량: ${Math.sqrt(results.Mx**2 + results.My**2).toExponential(2)} m³/s<extra></extra>`
+                name: `📊 ${currentLanguage === 'ko' ? '수송' :
+                            currentLanguage === 'zh' ? '输运' :
+                            currentLanguage === 'ja' ? '輸送' :
+                            currentLanguage === 'es' ? 'Transporte' :
+                            currentLanguage === 'ru' ? 'Перенос' :
+                            'Transport'} ${Math.sqrt(results.Mx**2 + results.My**2).toExponential(1)} m³/s`,
+                hovertemplate: `${currentLanguage === 'ko' ? '수송량' :
+                               currentLanguage === 'zh' ? '输运量' :
+                               currentLanguage === 'ja' ? '輸送量' :
+                               currentLanguage === 'es' ? 'Transporte' :
+                               currentLanguage === 'ru' ? 'Перенос' :
+                               'Transport'}: ${Math.sqrt(results.Mx**2 + results.My**2).toExponential(2)} m³/s<extra></extra>`
             });
             
             const layout = {
                 title: {
-                    text: `🌊 에크만 수송 시각화<br>위도: ${results.latitude.toFixed(1)}°`,
+                    text: t('chart_title_mobile') + `<br>${currentLanguage === 'ko' ? '위도' :
+                                                           currentLanguage === 'zh' ? '纬度' :
+                                                           currentLanguage === 'ja' ? '緯度' :
+                                                           currentLanguage === 'es' ? 'Latitud' :
+                                                           currentLanguage === 'ru' ? 'Широта' :
+                                                           'Latitude'}: ${results.latitude.toFixed(1)}°`,
                     font: {color: colors.text, size: 16},
                     x: 0.5,
                     y: 0.95
                 },
                 xaxis: {
-                    title: {text: 'U 속도 (동-서, m/s)', font: {color: colors.text, size: 12}},
+                    title: {text: `U ${currentLanguage === 'ko' ? '속도 (동-서, m/s)' :
+                                   currentLanguage === 'zh' ? '速度 (东-西, m/s)' :
+                                   currentLanguage === 'ja' ? '速度 (東-西, m/s)' :
+                                   currentLanguage === 'es' ? 'Velocidad (Este-Oeste, m/s)' :
+                                   currentLanguage === 'ru' ? 'Скорость (Восток-Запад, м/с)' :
+                                   'Velocity (East-West, m/s)'}`, font: {color: colors.text, size: 12}},
                     gridcolor: colors.grid,
                     tickfont: {color: colors.text, size: 11},
                     linecolor: colors.grid,
@@ -1379,7 +1805,12 @@
                     zerolinecolor: colors.grid
                 },
                 yaxis: {
-                    title: {text: 'V 속도 (남-북, m/s)', font: {color: colors.text, size: 12}},
+                    title: {text: `V ${currentLanguage === 'ko' ? '속도 (남-북, m/s)' :
+                                   currentLanguage === 'zh' ? '速度 (南-北, m/s)' :
+                                   currentLanguage === 'ja' ? '速度 (南-北, m/s)' :
+                                   currentLanguage === 'es' ? 'Velocidad (Sur-Norte, m/s)' :
+                                   currentLanguage === 'ru' ? 'Скорость (Юг-Север, м/с)' :
+                                   'Velocity (South-North, m/s)'}`, font: {color: colors.text, size: 12}},
                     gridcolor: colors.grid,
                     tickfont: {color: colors.text, size: 11},
                     linecolor: colors.grid,
@@ -1418,7 +1849,12 @@
                 mode: 'lines+markers',
                 line: {color: '#FF6B35', width: 4},
                 marker: {size: 10},
-                name: `바람 ${results.windSpeed.toFixed(1)} m/s`,
+                name: `${currentLanguage === 'ko' ? '바람' :
+                        currentLanguage === 'zh' ? '风' :
+                        currentLanguage === 'ja' ? '風' :
+                        currentLanguage === 'es' ? 'Viento' :
+                        currentLanguage === 'ru' ? 'Ветер' :
+                        'Wind'} ${results.windSpeed.toFixed(1)} m/s`,
                 xaxis: 'x', yaxis: 'y'
             });
             
@@ -1429,7 +1865,12 @@
                 mode: 'lines+markers',
                 line: {color: '#4A9EFF', width: 4},
                 marker: {size: 10},
-                name: `수송 ${Math.sqrt(results.Mx**2 + results.My**2).toExponential(2)} m³/s`,
+                name: `${currentLanguage === 'ko' ? '수송' :
+                        currentLanguage === 'zh' ? '输运' :
+                        currentLanguage === 'ja' ? '輸送' :
+                        currentLanguage === 'es' ? 'Transporte' :
+                        currentLanguage === 'ru' ? 'Перенос' :
+                        'Transport'} ${Math.sqrt(results.Mx**2 + results.My**2).toExponential(2)} m³/s`,
                 xaxis: 'x', yaxis: 'y'
             });
             
@@ -1444,14 +1885,19 @@
                     colorscale: 'Viridis',
                     showscale: true,
                     colorbar: {
-                        title: {text: "깊이 (m)", font: {color: colors.text}}, 
+                        title: {text: t('depth'), font: {color: colors.text}}, 
                         x: 0.48, y: 0.75, len: 0.25,
                         bgcolor: colors.background,
                         bordercolor: colors.grid,
                         tickfont: {color: colors.text}
                     }
                 },
-                name: '에크만 나선',
+                name: currentLanguage === 'ko' ? '에크만 나선' :
+                      currentLanguage === 'zh' ? '埃克曼螺线' :
+                      currentLanguage === 'ja' ? 'エクマン螺旋' :
+                      currentLanguage === 'es' ? 'Espiral de Ekman' :
+                      currentLanguage === 'ru' ? 'Спираль Экмана' :
+                      'Ekman Spiral',
                 xaxis: 'x2', yaxis: 'y2'
             });
             
@@ -1461,7 +1907,12 @@
                 mode: 'lines+markers',
                 line: {color: '#1F77B4', width: 3},
                 marker: {size: 4},
-                name: 'U 속도 (동-서)',
+                name: `U ${currentLanguage === 'ko' ? '속도 (동-서)' :
+                           currentLanguage === 'zh' ? '速度 (东-西)' :
+                           currentLanguage === 'ja' ? '速度 (東-西)' :
+                           currentLanguage === 'es' ? 'Velocidad (Este-Oeste)' :
+                           currentLanguage === 'ru' ? 'Скорость (Восток-Запад)' :
+                           'Velocity (East-West)'}`,
                 xaxis: 'x3', yaxis: 'y3'
             });
             
@@ -1470,79 +1921,140 @@
                 mode: 'lines+markers',
                 line: {color: '#FF7F0E', width: 3},
                 marker: {size: 4},
-                name: 'V 속도 (남-북)',
+                name: `V ${currentLanguage === 'ko' ? '속도 (남-북)' :
+                           currentLanguage === 'zh' ? '速度 (南-北)' :
+                           currentLanguage === 'ja' ? '速度 (南-北)' :
+                           currentLanguage === 'es' ? 'Velocidad (Sur-Norte)' :
+                           currentLanguage === 'ru' ? 'Скорость (Юг-Север)' :
+                           'Velocity (South-North)'}`,
                 xaxis: 'x3', yaxis: 'y3'
             });
             
             // 4. 수송 성분 바 차트
             traces.push({
-                x: ['Mx (동-서)', 'My (남-북)'],
+                x: [`Mx (${currentLanguage === 'ko' ? '동-서' :
+                           currentLanguage === 'zh' ? '东-西' :
+                           currentLanguage === 'ja' ? '東-西' :
+                           currentLanguage === 'es' ? 'Este-Oeste' :
+                           currentLanguage === 'ru' ? 'Восток-Запад' :
+                           'East-West'})`, 
+                    `My (${currentLanguage === 'ko' ? '남-북' :
+                           currentLanguage === 'zh' ? '南-北' :
+                           currentLanguage === 'ja' ? '南-北' :
+                           currentLanguage === 'es' ? 'Sur-Norte' :
+                           currentLanguage === 'ru' ? 'Юг-Север' :
+                           'South-North'})`],
                 y: [results.Mx, results.My],
                 type: 'bar',
                 marker: {color: ['#1F77B4', '#FF7F0E']},
-                name: '수송 성분',
+                name: currentLanguage === 'ko' ? '수송 성분' :
+                      currentLanguage === 'zh' ? '输运分量' :
+                      currentLanguage === 'ja' ? '輸送成分' :
+                      currentLanguage === 'es' ? 'Componentes de Transporte' :
+                      currentLanguage === 'ru' ? 'Компоненты переноса' :
+                      'Transport Components',
                 xaxis: 'x4', yaxis: 'y4'
             });
             
             const layout = {
                 title: {
-                    text: `🌊 에크만 수송 분석 (위도: ${results.latitude.toFixed(1)}°)`,
+                    text: t('chart_title_2d') + ` (${currentLanguage === 'ko' ? '위도' :
+                                                     currentLanguage === 'zh' ? '纬度' :
+                                                     currentLanguage === 'ja' ? '緯度' :
+                                                     currentLanguage === 'es' ? 'Latitud' :
+                                                     currentLanguage === 'ru' ? 'Широта' :
+                                                     'Latitude'}: ${results.latitude.toFixed(1)}°)`,
                     font: {color: colors.text, size: 16}
                 },
                 grid: {rows: 2, columns: 2, pattern: 'independent'},
                 
                 // 모든 축 스타일링
                 xaxis: {
-                    title: {text: '동-서 방향 (m/s)', font: {color: colors.text}}, 
+                    title: {text: currentLanguage === 'ko' ? '동-서 방향 (m/s)' :
+                                  currentLanguage === 'zh' ? '东-西方向 (m/s)' :
+                                  currentLanguage === 'ja' ? '東-西方向 (m/s)' :
+                                  currentLanguage === 'es' ? 'Dirección Este-Oeste (m/s)' :
+                                  currentLanguage === 'ru' ? 'Направление Восток-Запад (м/с)' :
+                                  'East-West Direction (m/s)', font: {color: colors.text}}, 
                     domain: [0, 0.45],
                     gridcolor: colors.grid,
                     tickfont: {color: colors.text},
                     linecolor: colors.grid
                 },
                 yaxis: {
-                    title: {text: '남-북 방향 (m/s)', font: {color: colors.text}}, 
+                    title: {text: currentLanguage === 'ko' ? '남-북 방향 (m/s)' :
+                                  currentLanguage === 'zh' ? '南-北方向 (m/s)' :
+                                  currentLanguage === 'ja' ? '南-北方向 (m/s)' :
+                                  currentLanguage === 'es' ? 'Dirección Sur-Norte (m/s)' :
+                                  currentLanguage === 'ru' ? 'Направление Юг-Север (м/с)' :
+                                  'South-North Direction (m/s)', font: {color: colors.text}}, 
                     domain: [0.55, 1],
                     gridcolor: colors.grid,
                     tickfont: {color: colors.text},
                     linecolor: colors.grid
                 },
                 xaxis2: {
-                    title: {text: 'U 속도 (m/s)', font: {color: colors.text}}, 
+                    title: {text: `U ${currentLanguage === 'ko' ? '속도 (m/s)' :
+                                    currentLanguage === 'zh' ? '速度 (m/s)' :
+                                    currentLanguage === 'ja' ? '速度 (m/s)' :
+                                    currentLanguage === 'es' ? 'Velocidad (m/s)' :
+                                    currentLanguage === 'ru' ? 'Скорость (м/с)' :
+                                    'Velocity (m/s)'}`, font: {color: colors.text}}, 
                     domain: [0.55, 1],
                     gridcolor: colors.grid,
                     tickfont: {color: colors.text},
                     linecolor: colors.grid
                 },
                 yaxis2: {
-                    title: {text: 'V 속도 (m/s)', font: {color: colors.text}}, 
+                    title: {text: `V ${currentLanguage === 'ko' ? '속도 (m/s)' :
+                                    currentLanguage === 'zh' ? '速度 (m/s)' :
+                                    currentLanguage === 'ja' ? '速度 (m/s)' :
+                                    currentLanguage === 'es' ? 'Velocidad (m/s)' :
+                                    currentLanguage === 'ru' ? 'Скорость (м/с)' :
+                                    'Velocity (m/s)'}`, font: {color: colors.text}}, 
                     domain: [0.55, 1],
                     gridcolor: colors.grid,
                     tickfont: {color: colors.text},
                     linecolor: colors.grid
                 },
                 xaxis3: {
-                    title: {text: '속도 (m/s)', font: {color: colors.text}}, 
+                    title: {text: currentLanguage === 'ko' ? '속도 (m/s)' :
+                                  currentLanguage === 'zh' ? '速度 (m/s)' :
+                                  currentLanguage === 'ja' ? '速度 (m/s)' :
+                                  currentLanguage === 'es' ? 'Velocidad (m/s)' :
+                                  currentLanguage === 'ru' ? 'Скорость (м/с)' :
+                                  'Velocity (m/s)', font: {color: colors.text}}, 
                     domain: [0, 0.45],
                     gridcolor: colors.grid,
                     tickfont: {color: colors.text},
                     linecolor: colors.grid
                 },
                 yaxis3: {
-                    title: {text: '깊이 (m)', font: {color: colors.text}}, 
+                    title: {text: t('depth'), font: {color: colors.text}}, 
                     domain: [0, 0.45],
                     gridcolor: colors.grid,
                     tickfont: {color: colors.text},
                     linecolor: colors.grid
                 },
                 xaxis4: {
-                    title: {text: '성분', font: {color: colors.text}}, 
+                    title: {text: currentLanguage === 'ko' ? '성분' :
+                                  currentLanguage === 'zh' ? '分量' :
+                                  currentLanguage === 'ja' ? '成分' :
+                                  currentLanguage === 'es' ? 'Componente' :
+                                  currentLanguage === 'ru' ? 'Компонент' :
+                                  'Component', font: {color: colors.text}}, 
                     domain: [0.55, 1],
                     gridcolor: colors.grid,
                     tickfont: {color: colors.text},
                     linecolor: colors.grid
                 },
                 yaxis4: {
-                    title: {text: '수송량 (m³/s)', font: {color: colors.text}}, 
+                    title: {text: currentLanguage === 'ko' ? '수송량 (m³/s)' :
+                                  currentLanguage === 'zh' ? '输运量 (m³/s)' :
+                                  currentLanguage === 'ja' ? '輸送量 (m³/s)' :
+                                  currentLanguage === 'es' ? 'Transporte (m³/s)' :
+                                  currentLanguage === 'ru' ? 'Перенос (м³/с)' :
+                                  'Transport (m³/s)', font: {color: colors.text}}, 
                     domain: [0, 0.45],
                     gridcolor: colors.grid,
                     tickfont: {color: colors.text},
@@ -1582,7 +2094,12 @@
                     width: 8,
                     colorbar: {
                         title: {
-                            text: "속도 크기 (m/s)", 
+                            text: t('wind_speed').includes('속도') ? "속도 크기 (m/s)" : 
+                                  t('wind_speed').includes('速度') ? "流速 (m/s)" :
+                                  t('wind_speed').includes('Wind') ? "Current Speed (m/s)" :
+                                  t('wind_speed').includes('Velocidad') ? "Velocidad de Corriente (m/s)" :
+                                  t('wind_speed').includes('Скорость') ? "Скорость течения (м/с)" :
+                                  "流速 (m/s)", 
                             font: {color: colors.text, size: 16},
                             side: 'right'
                         },
@@ -1599,7 +2116,12 @@
                     }
                 },
                 marker: {size: 4, color: speeds, colorscale: 'Viridis'},
-                name: '에크만 나선'
+                name: currentLanguage === 'ko' ? '에크만 나선' :
+                      currentLanguage === 'zh' ? '埃克曼螺线' :
+                      currentLanguage === 'ja' ? 'エクマン螺旋' :
+                      currentLanguage === 'es' ? 'Espiral de Ekman' :
+                      currentLanguage === 'ru' ? 'Спираль Экмана' :
+                      'Ekman Spiral'
             });
             
             // 바람 벡터
@@ -1613,7 +2135,12 @@
                 type: 'scatter3d',
                 line: {color: '#FF6B35', width: 10},
                 marker: {size: 8, color: '#FF6B35'},
-                name: `🌬️ 바람 ${results.windSpeed.toFixed(1)} m/s`
+                name: `🌬️ ${currentLanguage === 'ko' ? '바람' :
+                            currentLanguage === 'zh' ? '风' :
+                            currentLanguage === 'ja' ? '風' :
+                            currentLanguage === 'es' ? 'Viento' :
+                            currentLanguage === 'ru' ? 'Ветер' :
+                            'Wind'} ${results.windSpeed.toFixed(1)} m/s`
             });
             
             // 에크만 깊이별 벡터 필드 표시
@@ -1632,13 +2159,28 @@
                         width: 4
                     },
                     showlegend: false,
-                    hovertemplate: `깊이: ${results.zLevels[i].toFixed(1)}m<br>속도: ${speeds[i].toFixed(4)} m/s<extra></extra>`
+                    hovertemplate: `${currentLanguage === 'ko' ? '깊이' :
+                                   currentLanguage === 'zh' ? '深度' :
+                                   currentLanguage === 'ja' ? '深度' :
+                                   currentLanguage === 'es' ? 'Profundidad' :
+                                   currentLanguage === 'ru' ? 'Глубина' :
+                                   'Depth'}: ${results.zLevels[i].toFixed(1)}m<br>${currentLanguage === 'ko' ? '속도' :
+                                                                                currentLanguage === 'zh' ? '速度' :
+                                                                                currentLanguage === 'ja' ? '速度' :
+                                                                                currentLanguage === 'es' ? 'Velocidad' :
+                                                                                currentLanguage === 'ru' ? 'Скорость' :
+                                                                                'Speed'}: ${speeds[i].toFixed(4)} m/s<extra></extra>`
                 });
             }
             
             const layout = {
                 title: {
-                    text: `🌊 3D 에크만 수송 시각화 (위도: ${results.latitude.toFixed(1)}°)`,
+                    text: t('chart_title_3d') + `<br>${currentLanguage === 'ko' ? '위도' :
+                                                  currentLanguage === 'zh' ? '纬度' :
+                                                  currentLanguage === 'ja' ? '緯度' :
+                                                  currentLanguage === 'es' ? 'Latitud' :
+                                                  currentLanguage === 'ru' ? 'Широта' :
+                                                  'Latitude'}: ${results.latitude.toFixed(1)}°`,
                     font: {color: colors.text, size: 18},
                     x: 0.5,
                     y: 0.95
@@ -1646,21 +2188,31 @@
                 scene: {
                     bgcolor: colors.background,
                     xaxis: {
-                        title: {text: 'U 속도 (동-서, m/s)', font: {color: colors.text, size: 14}},
+                        title: {text: `U ${currentLanguage === 'ko' ? '속도 (동-서, m/s)' :
+                                      currentLanguage === 'zh' ? '速度 (东-西, m/s)' :
+                                      currentLanguage === 'ja' ? '速度 (東-西, m/s)' :
+                                      currentLanguage === 'es' ? 'Velocidad (Este-Oeste, m/s)' :
+                                      currentLanguage === 'ru' ? 'Скорость (Восток-Запад, м/с)' :
+                                      'Velocity (East-West, m/s)'}`, font: {color: colors.text, size: 14}},
                         gridcolor: colors.grid,
                         tickfont: {color: colors.text, size: 12},
                         linecolor: colors.grid,
                         backgroundcolor: colors.background
                     },
                     yaxis: {
-                        title: {text: 'V 속도 (남-북, m/s)', font: {color: colors.text, size: 14}},
+                        title: {text: `V ${currentLanguage === 'ko' ? '속도 (남-북, m/s)' :
+                                      currentLanguage === 'zh' ? '速度 (南-北, m/s)' :
+                                      currentLanguage === 'ja' ? '速度 (南-北, m/s)' :
+                                      currentLanguage === 'es' ? 'Velocidad (Sur-Norte, m/s)' :
+                                      currentLanguage === 'ru' ? 'Скорость (Юг-Север, м/с)' :
+                                      'Velocity (South-North, m/s)'}`, font: {color: colors.text, size: 14}},
                         gridcolor: colors.grid,
                         tickfont: {color: colors.text, size: 12},
                         linecolor: colors.grid,
                         backgroundcolor: colors.background
                     },
                     zaxis: {
-                        title: {text: '깊이 (m)', font: {color: colors.text, size: 14}},
+                        title: {text: t('depth'), font: {color: colors.text, size: 14}},
                         gridcolor: colors.grid,
                         tickfont: {color: colors.text, size: 12},
                         linecolor: colors.grid,
@@ -1836,29 +2388,67 @@
         // 내보내기
         function exportResults() {
             if (!currentResults) {
-                console.log("❌ 먼저 계산을 수행하세요.");
+                const message = currentLanguage === 'ko' ? "❌ 먼저 계산을 수행하세요." :
+                               currentLanguage === 'zh' ? "❌ 请先执行计算。" :
+                               currentLanguage === 'ja' ? "❌ まず計算を実行してください。" :
+                               currentLanguage === 'es' ? "❌ Por favor, ejecute el cálculo primero." :
+                               currentLanguage === 'ru' ? "❌ Сначала выполните расчет." :
+                               "❌ Please run the calculation first.";
+                console.log(message);
                 return;
             }
             
             const exportData = {
-                '입력 파라미터': {
-                    '바람속도 (m/s)': currentResults.windSpeed,
-                    '바람방향 (°)': currentResults.windDirection,
-                    '위도 (°)': currentResults.latitude,
-                    '깊이 (m)': currentResults.depth
+                [currentLanguage === 'ko' ? '입력 파라미터' :
+                 currentLanguage === 'zh' ? '输入参数' :
+                 currentLanguage === 'ja' ? '入力パラメータ' :
+                 currentLanguage === 'es' ? 'Parámetros de Entrada' :
+                 currentLanguage === 'ru' ? 'Входные параметры' :
+                 'Input Parameters']: {
+                    [t('wind_speed')]: currentResults.windSpeed,
+                    [t('wind_direction')]: currentResults.windDirection,
+                    [t('latitude')]: currentResults.latitude,
+                    [t('depth')]: currentResults.depth
                 },
-                '계산 결과': {
-                    '바람응력 (N/m²)': currentResults.windStress.toExponential(6),
-                    '에크만깊이 (m)': currentResults.ekmanDepth.toFixed(2),
-                    'Mx 수송 (m³/s)': currentResults.Mx.toExponential(6),
-                    'My 수송 (m³/s)': currentResults.My.toExponential(6),
-                    '총 수송량 (m³/s)': Math.sqrt(currentResults.Mx**2 + currentResults.My**2).toExponential(6),
-                    '에너지전달률 (W/m²)': currentResults.energyTransfer.toExponential(6),
-                    '코리올리 매개변수': currentResults.f.toExponential(6)
+                [currentLanguage === 'ko' ? '계산 결과' :
+                 currentLanguage === 'zh' ? '计算结果' :
+                 currentLanguage === 'ja' ? '計算結果' :
+                 currentLanguage === 'es' ? 'Resultados del Cálculo' :
+                 currentLanguage === 'ru' ? 'Результаты расчета' :
+                 'Calculation Results']: {
+                    [t('wind_stress')]: currentResults.windStress.toExponential(6),
+                    [t('ekman_depth')]: currentResults.ekmanDepth.toFixed(2),
+                    [`Mx ${currentLanguage === 'ko' ? '수송' :
+                           currentLanguage === 'zh' ? '输运' :
+                           currentLanguage === 'ja' ? '輸送' :
+                           currentLanguage === 'es' ? 'Transporte' :
+                           currentLanguage === 'ru' ? 'Перенос' :
+                           'Transport'} (m³/s)`]: currentResults.Mx.toExponential(6),
+                    [`My ${currentLanguage === 'ko' ? '수송' :
+                           currentLanguage === 'zh' ? '输运' :
+                           currentLanguage === 'ja' ? '輸送' :
+                           currentLanguage === 'es' ? 'Transporte' :
+                           currentLanguage === 'ru' ? 'Перенос' :
+                           'Transport'} (m³/s)`]: currentResults.My.toExponential(6),
+                    [t('total_transport')]: Math.sqrt(currentResults.Mx**2 + currentResults.My**2).toExponential(6),
+                    [t('energy_transfer')]: currentResults.energyTransfer.toExponential(6),
+                    [currentLanguage === 'ko' ? '코리올리 매개변수' :
+                     currentLanguage === 'zh' ? '科里奥利参数' :
+                     currentLanguage === 'ja' ? 'コリオリパラメータ' :
+                     currentLanguage === 'es' ? 'Parámetro de Coriolis' :
+                     currentLanguage === 'ru' ? 'Параметр Кориолиса' :
+                     'Coriolis Parameter']: currentResults.f.toExponential(6)
                 }
             };
             
-            console.log("📊 내보내기 데이터:");
+            const message = currentLanguage === 'ko' ? "📊 내보내기 데이터:" :
+                           currentLanguage === 'zh' ? "📊 导出数据:" :
+                           currentLanguage === 'ja' ? "📊 エクスポートデータ:" :
+                           currentLanguage === 'es' ? "📊 Datos de exportación:" :
+                           currentLanguage === 'ru' ? "📊 Данные экспорта:" :
+                           "📊 Export Data:";
+            
+            console.log(message);
             console.log(JSON.stringify(exportData, null, 2));
         }
         
@@ -1931,6 +2521,19 @@
         
         // 이벤트 리스너 설정
         document.addEventListener('DOMContentLoaded', function() {
+            // 언어 설정 초기화
+            const languageSelect = document.getElementById('language');
+            languageSelect.value = currentLanguage;
+            
+            // 언어 변경 이벤트 리스너
+            languageSelect.addEventListener('change', function() {
+                changeLanguage(this.value);
+                console.log(`🌍 언어가 ${this.value}로 변경되었습니다.`);
+            });
+            
+            // 초기 UI 텍스트 설정
+            updateUITexts();
+            
             // 슬라이더 이벤트
             ['wind_speed', 'wind_direction', 'latitude', 'depth'].forEach(id => {
                 document.getElementById(id).addEventListener('input', updateSliderValues);
@@ -2005,6 +2608,7 @@
             console.log("📊 파이썬 스타일 시각화가 준비되었습니다.");
             console.log("🌗 자동 다크/라이트 모드 전환이 활성화되었습니다.");
             console.log("📱 반응형 디자인 (데스크톱/태블릿/모바일) 지원");
+            console.log(`🌍 다중언어 지원 활성화 (현재: ${currentLanguage})`);
         });
     </script>
 </body>
