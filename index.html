@@ -275,22 +275,90 @@
             height: 100% !important;
         }
         
-        /* 모바일 햄버거 메뉴 */
+        /* 향상된 모바일 햄버거 메뉴 */
         .mobile-menu-toggle {
             display: none;
             position: fixed;
-            top: 10px;
-            left: 10px;
+            top: 15px;
+            left: 15px;
             z-index: 1000;
+            width: 50px;
+            height: 50px;
             background: var(--button-bg);
-            border: 1px outset var(--border-color);
-            padding: 8px;
-            border-radius: 4px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 18px;
-            color: var(--text-primary);
+            padding: 0;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         
+        .mobile-menu-toggle:hover {
+            background: var(--button-hover);
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        
+        .mobile-menu-toggle:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        /* 햄버거 아이콘 애니메이션 */
+        .hamburger {
+            width: 24px;
+            height: 18px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .hamburger span {
+            display: block;
+            height: 3px;
+            background: var(--text-primary);
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+        
+        .hamburger span:nth-child(1) {
+            width: 100%;
+        }
+        
+        .hamburger span:nth-child(2) {
+            width: 80%;
+            align-self: center;
+        }
+        
+        .hamburger span:nth-child(3) {
+            width: 100%;
+        }
+        
+        /* 활성 상태 - X 아이콘으로 변환 */
+        .mobile-menu-toggle.active .hamburger span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+            width: 100%;
+        }
+        
+        .mobile-menu-toggle.active .hamburger span:nth-child(2) {
+            opacity: 0;
+            transform: scale(0);
+        }
+        
+        .mobile-menu-toggle.active .hamburger span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+            width: 100%;
+        }
+        
+        /* 향상된 오버레이 */
         .mobile-menu-overlay {
             display: none;
             position: fixed;
@@ -298,8 +366,188 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.4));
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             z-index: 999;
+            touch-action: manipulation;
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .mobile-menu-overlay.active {
+            opacity: 1;
+        }
+        
+        /* 메뉴 패널 개선 */
+        .mobile-menu-panel {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 85%;
+            max-width: 350px;
+            height: 100vh;
+            background: var(--bg-primary);
+            z-index: 1001;
+            padding: 80px 20px 20px 20px;
+            overflow-y: auto;
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-right: 3px solid var(--border-color);
+            box-shadow: 5px 0 25px rgba(0,0,0,0.3);
+        }
+        
+        .mobile-menu-panel.active {
+            left: 0;
+        }
+        
+        /* 메뉴 헤더 */
+        .mobile-menu-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .mobile-menu-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .mobile-menu-close {
+            display: none;
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+        }
+        
+        .mobile-menu-close:hover {
+            background: var(--button-hover);
+            transform: rotate(90deg);
+        }
+        
+        .mobile-menu-close:active {
+            transform: rotate(90deg) scale(0.9);
+        }
+        
+        .mobile-menu-close::before,
+        .mobile-menu-close::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 2px;
+            background: var(--text-primary);
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-close::before {
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+        
+        .mobile-menu-close::after {
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+        
+        /* 메뉴 아이템 애니메이션 */
+        .mobile-menu-item {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .mobile-menu-panel.active .mobile-menu-item {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* 스태거드 애니메이션 지연 */
+        .mobile-menu-panel.active .mobile-menu-item:nth-child(1) { transition-delay: 0.1s; }
+        .mobile-menu-panel.active .mobile-menu-item:nth-child(2) { transition-delay: 0.15s; }
+        .mobile-menu-panel.active .mobile-menu-item:nth-child(3) { transition-delay: 0.2s; }
+        .mobile-menu-panel.active .mobile-menu-item:nth-child(4) { transition-delay: 0.25s; }
+        .mobile-menu-panel.active .mobile-menu-item:nth-child(5) { transition-delay: 0.3s; }
+        .mobile-menu-panel.active .mobile-menu-item:nth-child(6) { transition-delay: 0.35s; }
+        .mobile-menu-panel.active .mobile-menu-item:nth-child(7) { transition-delay: 0.4s; }
+        
+        /* 스와이프 진행률 표시 */
+        .swipe-indicator {
+            position: absolute;
+            top: 50%;
+            right: -3px;
+            width: 3px;
+            height: 60px;
+            background: linear-gradient(to bottom, transparent, #4A9EFF, transparent);
+            border-radius: 2px;
+            transform: translateY(-50%) scaleY(0);
+            transition: transform 0.2s ease;
+            z-index: 1002;
+        }
+        
+        .swipe-indicator.active {
+            transform: translateY(-50%) scaleY(1);
+        }
+        
+        /* 메뉴 그림자 효과 */
+        .mobile-menu-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -10px;
+            width: 10px;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0,0,0,0.1), transparent);
+            pointer-events: none;
+        }
+        
+        /* 바디 스크롤 락 */
+        body.menu-open {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+        
+        /* 터치 피드백 향상 */
+        .touch-feedback {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .touch-feedback::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .touch-feedback:active::after {
+            width: 200px;
+            height: 200px;
         }
         
         /* 태블릿 스타일 (768px - 1024px) */
@@ -360,24 +608,34 @@
             }
             
             .mobile-menu-toggle {
+                display: flex;
+            }
+            
+            .mobile-menu-close {
                 display: block;
             }
             
-            .control-frame {
-                width: 100%;
+            .mobile-menu-header {
+                display: flex;
+            }
+            
+            .mobile-menu-panel {
+                width: 85%;
+                max-width: 350px;
                 position: fixed;
                 top: 0;
                 left: -100%;
                 height: 100vh;
                 background: var(--bg-primary);
                 z-index: 1001;
-                padding: 60px 15px 15px 15px;
+                padding: 80px 20px 20px 20px;
                 overflow-y: auto;
-                transition: left 0.3s ease;
-                border-right: 2px solid var(--border-color);
+                transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                border-right: 3px solid var(--border-color);
+                box-shadow: 5px 0 25px rgba(0,0,0,0.3);
             }
             
-            .control-frame.active {
+            .mobile-menu-panel.active {
                 left: 0;
             }
             
@@ -513,17 +771,32 @@
                 flex-direction: row;
             }
             
-            .control-frame {
-                width: 300px;
+            .mobile-menu-panel {
+                width: 320px;
+                max-width: 320px;
                 height: 100vh;
                 position: fixed;
                 top: 0;
-                left: -300px;
+                left: -320px;
+                padding: 70px 15px 15px 15px;
+            }
+            
+            .mobile-menu-panel.active {
+                left: 0;
             }
             
             .plot-frame {
                 min-height: calc(100vh - 20px);
                 margin-left: 10px;
+            }
+            
+            /* 가로 모드에서 메뉴 헤더 높이 조정 */
+            .mobile-menu-header {
+                height: 60px;
+            }
+            
+            .mobile-menu-title {
+                font-size: 16px;
             }
         }
         
@@ -557,17 +830,31 @@
 <body>
     <div class="title-bar">Ekman Transport Visualizer</div>
     
-    <!-- 모바일 햄버거 메뉴 -->
-    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
-    <div class="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+    <!-- 향상된 모바일 햄버거 메뉴 -->
+    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="메뉴 열기" aria-expanded="false">
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </button>
+    <div class="mobile-menu-overlay" onclick="closeMobileMenu()" ontouchend="closeMobileMenu()"></div>
     
     <div class="main-window">
         <!-- 왼쪽 제어 패널 (Tkinter GUI와 동일한 레이아웃) -->
-        <div class="control-frame">
+        <div class="control-frame mobile-menu-panel">
+            <!-- 향상된 메뉴 헤더 -->
+            <div class="mobile-menu-header">
+                <h2 class="mobile-menu-title">⚙️ 제어판</h2>
+                <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="메뉴 닫기"></button>
+            </div>
+            
+            <!-- 스와이프 진행률 표시 -->
+            <div class="swipe-indicator"></div>
             
             <!-- 언어 선택 -->
-            <div class="labelframe">
-                <div class="labelframe-title">언어 선택</div>
+            <div class="labelframe mobile-menu-item">
+                <div class="labelframe-title">🌐 언어 선택</div>
                 <label for="language" class="tk-label">Language:</label>
                 <select id="language" class="tk-combobox">
                     <option value="en">English</option>
@@ -580,95 +867,95 @@
             </div>
             
             <!-- 파라미터 설정 -->
-            <div class="labelframe">
-                <div class="labelframe-title">파라미터 설정</div>
+            <div class="labelframe mobile-menu-item">
+                <div class="labelframe-title">🎛️ 파라미터 설정</div>
                 
                 <!-- 바람 속도 -->
                 <div class="slider-container">
-                    <label for="wind_speed" class="tk-label">바람 속도 (m/s):</label>
+                    <label for="wind_speed" class="tk-label">🌬️ 바람 속도 (m/s):</label>
                     <input type="range" id="wind_speed" class="tk-scale" min="0" max="30" value="10" step="0.1">
                     <span class="slider-value" id="wind_speed_value">10.0</span>
                 </div>
                 
                 <!-- 바람 방향 -->
                 <div class="slider-container">
-                    <label for="wind_direction" class="tk-label">바람 방향 (°):</label>
+                    <label for="wind_direction" class="tk-label">🧭 바람 방향 (°):</label>
                     <input type="range" id="wind_direction" class="tk-scale" min="0" max="360" value="0" step="1">
                     <span class="slider-value" id="wind_direction_value">0</span>
                 </div>
                 
                 <!-- 위도 -->
                 <div class="slider-container">
-                    <label for="latitude" class="tk-label">위도 (°):</label>
+                    <label for="latitude" class="tk-label">🌍 위도 (°):</label>
                     <input type="range" id="latitude" class="tk-scale" min="-90" max="90" value="30" step="1">
                     <span class="slider-value" id="latitude_value">30</span>
                 </div>
                 
                 <!-- 깊이 -->
                 <div class="slider-container">
-                    <label for="depth" class="tk-label">깊이 (m):</label>
+                    <label for="depth" class="tk-label">🌊 깊이 (m):</label>
                     <input type="range" id="depth" class="tk-scale" min="10" max="500" value="100" step="10">
                     <span class="slider-value" id="depth_value">100</span>
                 </div>
             </div>
             
             <!-- 시각화 타입 -->
-            <div class="labelframe">
-                <div class="labelframe-title">시각화 타입</div>
+            <div class="labelframe mobile-menu-item">
+                <div class="labelframe-title">📊 시각화 타입</div>
                 <div>
                     <input type="radio" id="vis_3d" name="vis_type" value="3d" checked class="tk-radiobutton">
-                    <label for="vis_3d" class="tk-label" style="display: inline;">3D</label>
+                    <label for="vis_3d" class="tk-label" style="display: inline;">🔮 3D</label>
                 </div>
                 <div>
                     <input type="radio" id="vis_2d" name="vis_type" value="2d" class="tk-radiobutton">
-                    <label for="vis_2d" class="tk-label" style="display: inline;">2D</label>
+                    <label for="vis_2d" class="tk-label" style="display: inline;">📈 2D</label>
                 </div>
             </div>
             
             <!-- 사전 설정 -->
-            <div class="labelframe">
-                <div class="labelframe-title">사전 설정</div>
+            <div class="labelframe mobile-menu-item">
+                <div class="labelframe-title">⚡ 사전 설정</div>
                 <div class="button-group">
-                    <button class="tk-button" onclick="setPreset('normal')">일반</button>
-                    <button class="tk-button" onclick="setPreset('strong')">강풍</button>
-                    <button class="tk-button" onclick="setPreset('typhoon')">태풍</button>
+                    <button class="tk-button touch-feedback" onclick="setPreset('normal')">🌤️ 일반</button>
+                    <button class="tk-button touch-feedback" onclick="setPreset('strong')">💨 강풍</button>
+                    <button class="tk-button touch-feedback" onclick="setPreset('typhoon')">🌪️ 태풍</button>
                 </div>
             </div>
             
             <!-- 지역 선택 -->
-            <div class="labelframe">
-                <div class="labelframe-title">지역 선택</div>
+            <div class="labelframe mobile-menu-item">
+                <div class="labelframe-title">🗺️ 지역 선택</div>
                 <select id="location" class="tk-combobox" aria-label="지역 선택">
-                    <option value="custom">사용자 설정</option>
-                    <option value="los_angeles">로스앤젤레스</option>
-                    <option value="busan">부산</option>
-                    <option value="north_pacific">북태평양</option>
-                    <option value="north_atlantic">북대서양</option>
-                    <option value="southern_ocean">남극해</option>
-                    <option value="equator">적도</option>
+                    <option value="custom">🎯 사용자 설정</option>
+                    <option value="los_angeles">🇺🇸 로스앤젤레스</option>
+                    <option value="busan">🇰🇷 부산</option>
+                    <option value="north_pacific">🌊 북태평양</option>
+                    <option value="north_atlantic">🌊 북대서양</option>
+                    <option value="southern_ocean">🧊 남극해</option>
+                    <option value="equator">🔆 적도</option>
                 </select>
             </div>
             
             <!-- 계산 버튼 -->
-            <div class="button-group" style="margin: 16px 0;">
-                <button id="calculate-btn" class="tk-button" style="width: 140px; height: 30px; font-weight: bold;" onclick="calculateAndVisualize()">계산 및 시각화</button>
-                <button id="export-btn" class="tk-button" style="width: 100px; height: 30px;" onclick="exportResults()">내보내기</button>
+            <div class="button-group mobile-menu-item" style="margin: 16px 0;">
+                <button id="calculate-btn" class="tk-button touch-feedback" style="width: 140px; height: 30px; font-weight: bold;" onclick="calculateAndVisualize()">🔄 계산 및 시각화</button>
+                <button id="export-btn" class="tk-button touch-feedback" style="width: 100px; height: 30px;" onclick="exportResults()">💾 내보내기</button>
             </div>
             
             <!-- 결과 표시 -->
-            <div class="labelframe">
-                <div class="labelframe-title">계산 결과</div>
+            <div class="labelframe mobile-menu-item">
+                <div class="labelframe-title">📋 계산 결과</div>
                 <div class="results-grid">
-                    <div class="result-label">바람 응력:</div>
+                    <div class="result-label">💨 바람 응력:</div>
                     <div class="result-value" id="wind_stress">-</div>
                     
-                    <div class="result-label">에크만 깊이:</div>
+                    <div class="result-label">📏 에크만 깊이:</div>
                     <div class="result-value" id="ekman_depth">-</div>
                     
-                    <div class="result-label">총 수송량:</div>
+                    <div class="result-label">🌊 총 수송량:</div>
                     <div class="result-value" id="total_transport">-</div>
                     
-                    <div class="result-label">에너지 전달률:</div>
+                    <div class="result-label">⚡ 에너지 전달률:</div>
                     <div class="result-value" id="energy_transfer">-</div>
                 </div>
             </div>
@@ -830,22 +1117,153 @@
             return window.innerWidth > 767 && window.innerWidth <= 1024;
         }
         
-        // 모바일 메뉴 토글
+        // 향상된 모바일 메뉴 토글
         function toggleMobileMenu() {
-            const controlFrame = document.querySelector('.control-frame');
+            const menuPanel = document.querySelector('.mobile-menu-panel');
             const overlay = document.querySelector('.mobile-menu-overlay');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            const body = document.body;
             
-            controlFrame.classList.toggle('active');
-            overlay.classList.toggle('active');
+            const isActive = menuPanel.classList.contains('active');
+            
+            if (!isActive) {
+                // 메뉴 열기
+                menuPanel.classList.add('active');
+                overlay.classList.add('active');
+                toggleButton.classList.add('active');
+                body.classList.add('menu-open');
+                toggleButton.setAttribute('aria-expanded', 'true');
+                
+                // 햄버거 메뉴 진동 피드백 (지원하는 디바이스에서)
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+                
+                // 메뉴가 열렸을 때 포커스 설정 (접근성 개선)
+                setTimeout(() => {
+                    const firstMenuItem = menuPanel.querySelector('.mobile-menu-item input, .mobile-menu-item select, .mobile-menu-item button');
+                    if (firstMenuItem) firstMenuItem.focus();
+                }, 400);
+                
+                console.log("📱 모바일 메뉴 열림");
+                
+            } else {
+                // 메뉴 닫기
+                closeMobileMenu();
+            }
         }
         
-        // 모바일 메뉴 닫기
+        // 향상된 모바일 메뉴 닫기
         function closeMobileMenu() {
-            const controlFrame = document.querySelector('.control-frame');
+            const menuPanel = document.querySelector('.mobile-menu-panel');
             const overlay = document.querySelector('.mobile-menu-overlay');
+            const toggleButton = document.querySelector('.mobile-menu-toggle');
+            const body = document.body;
             
-            controlFrame.classList.remove('active');
+            menuPanel.classList.remove('active');
             overlay.classList.remove('active');
+            toggleButton.classList.remove('active');
+            body.classList.remove('menu-open');
+            toggleButton.setAttribute('aria-expanded', 'false');
+            
+            // 메뉴가 닫혔을 때 햄버거 버튼에 포커스 (접근성 개선)
+            setTimeout(() => {
+                toggleButton.focus();
+            }, 100);
+            
+            console.log("📱 모바일 메뉴 닫힘");
+        }
+        
+        // 향상된 스와이프 제스처로 메뉴 닫기
+        function setupSwipeGesture() {
+            const menuPanel = document.querySelector('.mobile-menu-panel');
+            const swipeIndicator = document.querySelector('.swipe-indicator');
+            let startX = 0;
+            let currentX = 0;
+            let isDragging = false;
+            let swipeStarted = false;
+            
+            menuPanel.addEventListener('touchstart', function(e) {
+                startX = e.touches[0].clientX;
+                isDragging = true;
+                swipeStarted = false;
+            }, { passive: true });
+            
+            menuPanel.addEventListener('touchmove', function(e) {
+                if (!isDragging) return;
+                currentX = e.touches[0].clientX;
+                const diffX = currentX - startX;
+                
+                // 왼쪽으로 스와이프하는 경우 (메뉴 닫기)
+                if (diffX < -30 && !swipeStarted) {
+                    swipeStarted = true;
+                    swipeIndicator.classList.add('active');
+                    
+                    // 진동 피드백
+                    if (navigator.vibrate) {
+                        navigator.vibrate(20);
+                    }
+                }
+                
+                if (swipeStarted && diffX < 0) {
+                    const progress = Math.abs(diffX) / 150; // 150px 기준
+                    const clampedProgress = Math.min(progress, 1);
+                    
+                    // 부드러운 변형 적용
+                    const translateX = Math.max(diffX * 0.5, -200);
+                    menuPanel.style.transform = `translateX(${translateX}px)`;
+                    menuPanel.style.opacity = 1 - (clampedProgress * 0.3);
+                    
+                    // 스와이프 진행률에 따라 인디케이터 색상 변경
+                    const hue = 240 - (clampedProgress * 60); // 파란색에서 빨간색으로
+                    swipeIndicator.style.background = `linear-gradient(to bottom, transparent, hsl(${hue}, 70%, 60%), transparent)`;
+                }
+            }, { passive: true });
+            
+            menuPanel.addEventListener('touchend', function(e) {
+                if (!isDragging) return;
+                isDragging = false;
+                swipeStarted = false;
+                
+                const diffX = currentX - startX;
+                const swipeDistance = Math.abs(diffX);
+                const swipeVelocity = swipeDistance / 300; // 간단한 속도 계산
+                
+                // 충분히 왼쪽으로 스와이프했거나 빠른 속도로 스와이프한 경우 메뉴 닫기
+                if ((diffX < -100) || (diffX < -50 && swipeVelocity > 0.3)) {
+                    // 성공적인 스와이프 피드백
+                    if (navigator.vibrate) {
+                        navigator.vibrate([30, 50, 30]);
+                    }
+                    
+                    closeMobileMenu();
+                    console.log(`📱 스와이프로 메뉴 닫기 (거리: ${swipeDistance.toFixed(0)}px, 속도: ${swipeVelocity.toFixed(2)})`);
+                } else {
+                    // 스와이프 취소 - 원래 위치로 복원
+                    if (navigator.vibrate) {
+                        navigator.vibrate(10);
+                    }
+                }
+                
+                // 변형 및 인디케이터 초기화
+                menuPanel.style.transform = '';
+                menuPanel.style.opacity = '';
+                swipeIndicator.classList.remove('active');
+                swipeIndicator.style.background = '';
+                
+            }, { passive: true });
+            
+            // 스와이프 취소 (터치가 메뉴 밖으로 나갔을 때)
+            document.addEventListener('touchend', function(e) {
+                if (isDragging && !menuPanel.contains(e.target)) {
+                    isDragging = false;
+                    swipeStarted = false;
+                    menuPanel.style.transform = '';
+                    menuPanel.style.opacity = '';
+                    swipeIndicator.classList.remove('active');
+                    swipeIndicator.style.background = '';
+                }
+            }, { passive: true });
         }
         
         // 모바일 최적화 2D 시각화 생성 (간단한 단일 차트)
@@ -1286,10 +1704,17 @@
                         touchAction: 'auto'
                     };
                     
-                    // 모바일에서 계산 후 메뉴 자동 닫기
+                    // 모바일에서 계산 후 메뉴 자동 닫기 (부드러운 애니메이션)
                     setTimeout(() => {
                         closeMobileMenu();
-                    }, 500);
+                        
+                        // 성공 피드백
+                        if (navigator.vibrate) {
+                            navigator.vibrate([100, 50, 100]);
+                        }
+                        
+                        console.log("📱 계산 완료 - 메뉴 자동 닫기");
+                    }, 800);
                     
                 } else if (isTablet()) {
                     // 태블릿 최적화
@@ -1477,6 +1902,28 @@
             
             // 지역 선택 이벤트
             document.getElementById('location').addEventListener('change', onLocationSelect);
+            
+            // 키보드 이벤트 (ESC로 메뉴 닫기, Enter로 메뉴 열기)
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const menuPanel = document.querySelector('.mobile-menu-panel');
+                    if (menuPanel && menuPanel.classList.contains('active')) {
+                        closeMobileMenu();
+                        e.preventDefault();
+                    }
+                }
+                
+                // 햄버거 버튼에 포커스가 있을 때 Enter/Space로 메뉴 토글
+                if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('mobile-menu-toggle')) {
+                    toggleMobileMenu();
+                    e.preventDefault();
+                }
+            });
+            
+            // 모바일 스와이프 제스처 설정
+            if (isMobile()) {
+                setupSwipeGesture();
+            }
             
             // 시스템 테마 변경 감지
             if (window.matchMedia) {
