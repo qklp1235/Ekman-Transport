@@ -169,9 +169,9 @@
             flex: 1;
             background-color: var(--plot-bg);
             border: 2px groove var(--border-color);
-            margin: 10px;
-            padding: 10px;
-            min-height: 600px;
+            margin: 5px;
+            padding: 5px;
+            min-height: calc(100vh - 100px);
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
         
@@ -260,6 +260,19 @@
                 background-color: var(--input-bg);
                 color: var(--text-primary);
             }
+        }
+        
+        /* 플롯 영역 최적화 */
+        #plot-area {
+            width: 100% !important;
+            height: 100% !important;
+            min-height: calc(100vh - 120px);
+        }
+        
+        /* Plotly 차트 컨테이너 최적화 */
+        .plot-container {
+            width: 100% !important;
+            height: 100% !important;
         }
         
         /* 테마 전환 애니메이션 */
@@ -708,10 +721,21 @@
                     colorscale: 'Viridis',
                     width: 8,
                     colorbar: {
-                        title: {text: "속도 크기 (m/s)", font: {color: colors.text}},
+                        title: {
+                            text: "속도 크기 (m/s)", 
+                            font: {color: colors.text, size: 16},
+                            side: 'right'
+                        },
                         bgcolor: colors.background,
                         bordercolor: colors.grid,
-                        tickfont: {color: colors.text}
+                        borderwidth: 2,
+                        tickfont: {color: colors.text, size: 14},
+                        len: 0.8,
+                        thickness: 25,
+                        x: 1.02,
+                        xanchor: 'left',
+                        y: 0.5,
+                        yanchor: 'middle'
                     }
                 },
                 marker: {size: 4, color: speeds, colorscale: 'Viridis'},
@@ -755,43 +779,50 @@
             const layout = {
                 title: {
                     text: `🌊 3D 에크만 수송 시각화 (위도: ${results.latitude.toFixed(1)}°)`,
-                    font: {color: colors.text, size: 16}
+                    font: {color: colors.text, size: 18},
+                    x: 0.5,
+                    y: 0.95
                 },
                 scene: {
                     bgcolor: colors.background,
                     xaxis: {
-                        title: {text: 'U 속도 (동-서, m/s)', font: {color: colors.text}},
+                        title: {text: 'U 속도 (동-서, m/s)', font: {color: colors.text, size: 14}},
                         gridcolor: colors.grid,
-                        tickfont: {color: colors.text},
+                        tickfont: {color: colors.text, size: 12},
                         linecolor: colors.grid,
                         backgroundcolor: colors.background
                     },
                     yaxis: {
-                        title: {text: 'V 속도 (남-북, m/s)', font: {color: colors.text}},
+                        title: {text: 'V 속도 (남-북, m/s)', font: {color: colors.text, size: 14}},
                         gridcolor: colors.grid,
-                        tickfont: {color: colors.text},
+                        tickfont: {color: colors.text, size: 12},
                         linecolor: colors.grid,
                         backgroundcolor: colors.background
                     },
                     zaxis: {
-                        title: {text: '깊이 (m)', font: {color: colors.text}},
+                        title: {text: '깊이 (m)', font: {color: colors.text, size: 14}},
                         gridcolor: colors.grid,
-                        tickfont: {color: colors.text},
+                        tickfont: {color: colors.text, size: 12},
                         linecolor: colors.grid,
                         backgroundcolor: colors.background
                     },
                     camera: {
-                        eye: {x: 1.5, y: 1.5, z: 1.2}
-                    }
+                        eye: {x: 1.8, y: 1.8, z: 1.5}
+                    },
+                    aspectmode: 'cube'
                 },
-                width: 900,
-                height: 700,
-                font: {size: 12, color: colors.text},
+                autosize: true,
+                width: null,
+                height: null,
+                margin: {l: 0, r: 0, t: 60, b: 0},
+                font: {size: 14, color: colors.text},
                 plot_bgcolor: colors.background,
                 paper_bgcolor: colors.paper,
                 legend: {
-                    font: {color: colors.text},
-                    bgcolor: 'rgba(0,0,0,0)'
+                    font: {color: colors.text, size: 12},
+                    bgcolor: 'rgba(0,0,0,0)',
+                    x: 0.02,
+                    y: 0.98
                 }
             };
             
@@ -829,18 +860,24 @@
                 const config = {
                     displayModeBar: true,
                     displaylogo: false,
+                    responsive: true,
                     modeBarButtonsToAdd: ['downloadpng'],
                     toImageButtonOptions: {
                         format: 'png',
                         filename: 'ekman_transport_plot',
-                        height: 800,
-                        width: 1200,
+                        height: 1000,
+                        width: 1600,
                         scale: 2
                     }
                 };
                 
                 document.getElementById('plot-area').innerHTML = '';
                 Plotly.newPlot('plot-area', plotData.data, plotData.layout, config);
+                
+                // 화면 크기 변경 시 자동 리사이즈
+                window.addEventListener('resize', function() {
+                    Plotly.Plots.resize('plot-area');
+                });
                 
                 updateResultsDisplay(results);
                 
@@ -924,8 +961,14 @@
                     }
                 };
                 
-                Plotly.newPlot('plot-area', plotData.data, plotData.layout, config);
-                console.log("🎨 테마 변경에 따라 차트가 업데이트되었습니다!");
+                                 Plotly.newPlot('plot-area', plotData.data, plotData.layout, config);
+                 
+                 // 차트 리사이즈 적용
+                 setTimeout(() => {
+                     Plotly.Plots.resize('plot-area');
+                 }, 100);
+                 
+                 console.log("🎨 테마 변경에 따라 차트가 업데이트되었습니다!");
             }
         }
         
