@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌊 Ekman Transport</title>
+    
+    <!-- PyScript -->
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    
+    <!-- Apple Design System -->
+    <style>
+        :root {
+            --blue: #007AFF;
+            --blue-light: #5AC8FA;
+            --gray: #8E8E93;
+            --gray-light: #F2F2F7;
+            --white: #FFFFFF;
+        }
+        
+        * { box-sizing: border-box; }
+        
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: var(--gray-light);
+            color: #000;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .nav-bar {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(20px);
+            padding: 16px 20px;
+            border-bottom: 0.5px solid #E5E5EA;
+            text-align: center;
+            font-weight: 600;
+            font-size: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            gap: 24px;
+        }
+        
+        .sidebar {
+            width: 320px;
+            flex-shrink: 0;
+        }
+        
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 16px 20px 8px;
+        }
+        
+        .setting-row {
+            padding: 12px 20px;
+            border-bottom: 0.5px solid var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 44px;
+        }
+        
+        .setting-row:last-child { border-bottom: none; }
+        
+        .ios-slider {
+            width: 180px;
+            height: 2px;
+            background: var(--gray-light);
+            border-radius: 1px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .ios-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            background: var(--white);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        
+        .ios-button {
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        
+        .ios-button:hover {
+            background: var(--blue-light);
+            transform: translateY(-1px);
+        }
+        
+        .ios-button.small {
+            padding: 6px 12px;
+            font-size: 15px;
+            width: auto;
+            background: var(--gray-light);
+            color: var(--blue);
+        }
+        
+        .plot-area {
+            flex: 1;
+            background: var(--white);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            min-height: 600px;
+        }
+        
+        .value-display {
+            font-family: 'SF Mono', monospace;
+            color: var(--gray);
+            font-size: 17px;
+            min-width: 80px;
+            text-align: right;
+        }
+        
+        .placeholder {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+        
+        .placeholder-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: var(--blue);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-light);
+            border-top: 2px solid var(--blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">🌊 Ekman Transport Visualizer</div>
+    
+    <div class="container">
+        <div class="sidebar">
+            <!-- 파라미터 -->
+            <div class="card">
+                <div class="card-title">Parameters</div>
+                
+                <div class="setting-row">
+                    <span>바람 속도</span>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <input type="range" id="wind_speed" class="ios-slider" min="0" max="30" value="10" step="0.1">
+                        <span class="value-display" id="wind_speed_value">10.0 m/s</span>
+                    </div>
+                </div>
+                
+                <div class="setting-row">
+                    <span>바람 방향</span>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <input type="range" id="wind_direction" class="ios-slider" min="0" max="360" value="0">
+                        <span class="value-display" id="wind_direction_value">0°</span>
+                    </div>
+                </div>
+                
+                <div class="setting-row">
+                    <span>위도</span>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <input type="range" id="latitude" class="ios-slider" min="-90" max="90" value="30">
+                        <span class="value-display" id="latitude_value">30°</span>
+                    </div>
+                </div>
+                
+                <div class="setting-row">
+                    <span>깊이</span>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <input type="range" id="depth" class="ios-slider" min="10" max="500" value="100" step="10">
+                        <span class="value-display" id="depth_value">100 m</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 사전 설정 -->
+            <div class="card">
+                <div class="card-title">Presets</div>
+                <div class="setting-row">
+                    <div class="button-group">
+                        <button class="ios-button small" id="preset-normal">일반</button>
+                        <button class="ios-button small" id="preset-strong">강풍</button>
+                        <button class="ios-button small" id="preset-typhoon">태풍</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 계산 -->
+            <div class="card">
+                <div class="setting-row">
+                    <button class="ios-button" id="calculate-btn">🚀 계산 및 시각화</button>
+                </div>
+            </div>
+            
+            <!-- 결과 -->
+            <div class="card">
+                <div class="card-title">Results</div>
+                <div class="setting-row">
+                    <span>바람 응력</span>
+                    <span class="value-display" id="wind_stress">-</span>
+                </div>
+                <div class="setting-row">
+                    <span>에크만 깊이</span>
+                    <span class="value-display" id="ekman_depth">-</span>
+                </div>
+                <div class="setting-row">
+                    <span>총 수송량</span>
+                    <span class="value-display" id="total_transport">-</span>
+                </div>
+                <div class="setting-row">
+                    <span>에너지 전달률</span>
+                    <span class="value-display" id="energy_transfer">-</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="plot-area">
+            <div id="plot" class="placeholder">
+                <div class="placeholder-icon">🌊</div>
+                <p>파라미터를 조정하고<br>계산 버튼을 눌러주세요</p>
+            </div>
+        </div>
+    </div>
+
+    <py-config>
+        packages = ["numpy", "plotly"]
+    </py-config>
+
+    <py-script>
+import numpy as np
+import plotly.graph_objects as go
+import plotly.offline as pyo
+from js import document, console
+
+# 간단한 에크만 계산기
+class EkmanCalculator:
+    def __init__(self):
+        self.rho_water = 1025  # kg/m³
+        self.rho_air = 1.225   # kg/m³ 
+        self.Cd = 0.0013       # 항력 계수
+        
+    def calculate(self, wind_speed, wind_direction, latitude, depth):
+        """에크만 수송 계산"""
+        if abs(latitude) < 1:
+            latitude = 1.0 if latitude >= 0 else -1.0
+            
+        # 코리올리 매개변수
+        omega = 7.2921e-5
+        f = 2 * omega * np.sin(np.radians(latitude))
+        
+        # 바람 응력
+        wind_stress = self.rho_air * self.Cd * wind_speed**2
+        
+        # 바람 방향 변환
+        wind_rad = np.radians(wind_direction)
+        tau_x = wind_stress * np.cos(wind_rad)
+        tau_y = wind_stress * np.sin(wind_rad)
+        
+        # 에크만 수송
+        Mx = -tau_y / (self.rho_water * f)
+        My = tau_x / (self.rho_water * f)
+        
+        # 에크만 깊이
+        K = 0.01
+        ekman_depth = np.pi * np.sqrt(2 * K / abs(f))
+        
+        # 나선 계산
+        z = np.linspace(0, depth, 30)
+        a = np.sqrt(abs(f) / (2 * K))
+        factor = np.exp(-a * z) / (self.rho_water * np.sqrt(2 * K * abs(f)))
+        
+        cos_az = np.cos(a * z)
+        sin_az = np.sin(a * z)
+        sgn_f = np.sign(f)
+        
+        u = factor * (tau_x * cos_az - sgn_f * tau_y * sin_az)
+        v = factor * (sgn_f * tau_x * sin_az + tau_y * cos_az)
+        
+        return {
+            'wind_speed': wind_speed,
+            'wind_direction': wind_direction,
+            'latitude': latitude,
+            'wind_stress': wind_stress,
+            'Mx': Mx,
+            'My': My,
+            'ekman_depth': ekman_depth,
+            'z': z,
+            'u': u,
+            'v': v,
+            'energy_transfer': tau_x * u[0] + tau_y * v[0] if len(u) > 0 else 0
+        }
+    
+    def create_3d_plot(self, results):
+        """3D 플롯 생성"""
+        z, u, v = results['z'], results['u'], results['v']
+        speeds = np.sqrt(u**2 + v**2)
+        max_speed = np.max(speeds) if np.max(speeds) > 0 else 1.0
+        
+        fig = go.Figure()
+        
+        # 나선 벡터들
+        for i in range(0, len(z), 3):
+            intensity = speeds[i] / max_speed
+            fig.add_trace(go.Scatter3d(
+                x=[0, u[i]*15],
+                y=[0, v[i]*15], 
+                z=[-z[i], -z[i]],
+                mode='lines+markers',
+                line=dict(
+                    color=f'rgb({int(255*intensity)}, {int(100*(1-intensity))}, 255)',
+                    width=5
+                ),
+                marker=dict(size=5),
+                showlegend=False
+            ))
+        
+        # 바람 벡터
+        wind_speed = results['wind_speed']
+        wind_rad = np.radians(results['wind_direction'])
+        wind_x = wind_speed * np.cos(wind_rad)
+        wind_y = wind_speed * np.sin(wind_rad)
+        
+        fig.add_trace(go.Scatter3d(
+            x=[0, wind_x],
+            y=[0, wind_y],
+            z=[15, 15],
+            mode='lines+markers',
+            line=dict(color='orange', width=12),
+            marker=dict(size=12, color='orange'),
+            name=f'바람 {wind_speed:.1f} m/s'
+        ))
+        
+        fig.update_layout(
+            title='🌊 에크만 수송 3D 시각화',
+            scene=dict(
+                xaxis_title='동-서 (m/s)',
+                yaxis_title='남-북 (m/s)',
+                zaxis_title='깊이 (m)',
+                camera=dict(eye=dict(x=1.5, y=1.5, z=1.5))
+            ),
+            width=650,
+            height=500,
+            margin=dict(l=0, r=0, t=50, b=0)
+        )
+        
+        return fig
+
+# 계산기 인스턴스
+calc = EkmanCalculator()
+
+def update_values():
+    """값 업데이트"""
+    document.getElementById('wind_speed_value').innerHTML = f"{float(document.getElementById('wind_speed').value):.1f} m/s"
+    document.getElementById('wind_direction_value').innerHTML = f"{float(document.getElementById('wind_direction').value):.0f}°"
+    document.getElementById('latitude_value').innerHTML = f"{float(document.getElementById('latitude').value):.0f}°"
+    document.getElementById('depth_value').innerHTML = f"{float(document.getElementById('depth').value):.0f} m"
+
+def set_preset(preset_type):
+    """사전 설정"""
+    if preset_type == 'normal':
+        document.getElementById('wind_speed').value = 10
+        document.getElementById('wind_direction').value = 0
+        document.getElementById('latitude').value = 30
+        document.getElementById('depth').value = 100
+    elif preset_type == 'strong':
+        document.getElementById('wind_speed').value = 20
+        document.getElementById('wind_direction').value = 45
+        document.getElementById('latitude').value = 45
+        document.getElementById('depth').value = 150
+    elif preset_type == 'typhoon':
+        document.getElementById('wind_speed').value = 30
+        document.getElementById('wind_direction').value = 90
+        document.getElementById('latitude').value = 25
+        document.getElementById('depth').value = 200
+    
+    update_values()
+
+def calculate():
+    """계산 및 시각화"""
+    try:
+        console.log("🚀 계산 시작!")
+        
+        # 로딩
+        document.getElementById('plot').innerHTML = '''
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>계산 중...</p>
+            </div>
+        '''
+        
+        # 파라미터
+        wind_speed = float(document.getElementById('wind_speed').value)
+        wind_direction = float(document.getElementById('wind_direction').value)
+        latitude = float(document.getElementById('latitude').value)
+        depth = float(document.getElementById('depth').value)
+        
+        console.log(f"바람: {wind_speed} m/s, 방향: {wind_direction}°, 위도: {latitude}°")
+        
+        # 계산
+        results = calc.calculate(wind_speed, wind_direction, latitude, depth)
+        
+        # 3D 시각화
+        fig = calc.create_3d_plot(results)
+        plot_html = pyo.plot(fig, output_type='div', include_plotlyjs=False)
+        document.getElementById('plot').innerHTML = plot_html
+        
+        # 결과 업데이트
+        document.getElementById('wind_stress').innerHTML = f"{results['wind_stress']*1000:.2f} mN/m²"
+        document.getElementById('ekman_depth').innerHTML = f"{results['ekman_depth']:.1f} m"
+        
+        transport = np.sqrt(results['Mx']**2 + results['My']**2)
+        document.getElementById('total_transport').innerHTML = f"{transport:.2e} m³/s"
+        document.getElementById('energy_transfer').innerHTML = f"{results['energy_transfer']*1000:.3f} mW/m²"
+        
+        console.log("✅ 완료!")
+        
+    except Exception as e:
+        console.log(f"❌ 오류: {e}")
+        document.getElementById('plot').innerHTML = f'<div class="placeholder"><div class="placeholder-icon" style="color: red;">⚠️</div><p>오류: {e}</p></div>'
+
+def setup():
+    """설정"""
+    console.log("설정 중...")
+    
+    # 슬라이더
+    for slider_id in ['wind_speed', 'wind_direction', 'latitude', 'depth']:
+        document.getElementById(slider_id).addEventListener('input', lambda e: update_values())
+    
+    # 버튼들
+    document.getElementById('calculate-btn').addEventListener('click', lambda e: calculate())
+    document.getElementById('preset-normal').addEventListener('click', lambda e: set_preset('normal'))
+    document.getElementById('preset-strong').addEventListener('click', lambda e: set_preset('strong'))
+    document.getElementById('preset-typhoon').addEventListener('click', lambda e: set_preset('typhoon'))
+    
+    console.log("✅ 준비 완료!")
+
+# 초기화
+setup()
+update_values()
+console.log("🌊 Ekman Transport - 사용할 준비가 되었습니다!")
+    </py-script>
+    
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</body>
+</html> 

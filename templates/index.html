@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>에크만 수송 시각화</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- 헤더 -->
+        <div class="row bg-primary text-white py-3">
+            <div class="col-12">
+                <h1 class="text-center mb-0">
+                    <i class="fas fa-water me-2"></i>
+                    에크만 수송 시각화 시스템
+                </h1>
+                <p class="text-center mb-0">Ekman Transport Visualization System</p>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <!-- 제어 패널 -->
+            <div class="col-md-3">
+                <div class="card shadow">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-sliders-h me-2"></i>파라미터 설정</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="ekmanForm">
+                            <!-- 바람 속도 -->
+                            <div class="mb-3">
+                                <label for="windSpeed" class="form-label">
+                                    <i class="fas fa-wind me-1"></i>바람 속도 (m/s)
+                                </label>
+                                <input type="range" class="form-range" id="windSpeed" min="0" max="30" value="10" step="0.5">
+                                <div class="d-flex justify-content-between">
+                                    <small>0</small>
+                                    <small id="windSpeedValue">10</small>
+                                    <small>30</small>
+                                </div>
+                            </div>
+
+                            <!-- 바람 방향 -->
+                            <div class="mb-3">
+                                <label for="windDirection" class="form-label">
+                                    <i class="fas fa-compass me-1"></i>바람 방향 (도)
+                                </label>
+                                <input type="range" class="form-range" id="windDirection" min="0" max="360" value="0" step="5">
+                                <div class="d-flex justify-content-between">
+                                    <small>0°</small>
+                                    <small id="windDirectionValue">0°</small>
+                                    <small>360°</small>
+                                </div>
+                            </div>
+
+                            <!-- 위도 -->
+                            <div class="mb-3">
+                                <label for="latitude" class="form-label">
+                                    <i class="fas fa-globe me-1"></i>위도 (도)
+                                </label>
+                                <input type="range" class="form-range" id="latitude" min="-90" max="90" value="30" step="1">
+                                <div class="d-flex justify-content-between">
+                                    <small>-90°</small>
+                                    <small id="latitudeValue">30°</small>
+                                    <small>90°</small>
+                                </div>
+                            </div>
+
+                            <!-- 깊이 -->
+                            <div class="mb-3">
+                                <label for="depth" class="form-label">
+                                    <i class="fas fa-arrow-down me-1"></i>깊이 (m)
+                                </label>
+                                <input type="range" class="form-range" id="depth" min="10" max="1000" value="100" step="10">
+                                <div class="d-flex justify-content-between">
+                                    <small>10m</small>
+                                    <small id="depthValue">100m</small>
+                                    <small>1000m</small>
+                                </div>
+                            </div>
+
+                            <!-- 시각화 타입 -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-eye me-1"></i>시각화 타입
+                                </label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="visualizationType" id="type3d" value="3d" checked>
+                                    <label class="form-check-label" for="type3d">
+                                        <i class="fas fa-cube me-1"></i>3D 시각화
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="visualizationType" id="type2d" value="2d">
+                                    <label class="form-check-label" for="type2d">
+                                        <i class="fas fa-square me-1"></i>2D 분석
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 계산 버튼 -->
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-calculator me-2"></i>계산 및 시각화
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 결과 정보 -->
+                <div class="card mt-3 shadow">
+                    <div class="card-header bg-success text-white">
+                        <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>계산 결과</h6>
+                    </div>
+                    <div class="card-body" id="resultsPanel">
+                        <p class="text-muted">파라미터를 설정하고 계산 버튼을 클릭하세요.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 시각화 영역 -->
+            <div class="col-md-9">
+                <div class="card shadow">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-area me-2"></i>
+                            <span id="visualizationTitle">에크만 수송 시각화</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="loadingSpinner" class="text-center d-none">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">계산 중...</p>
+                        </div>
+                        <div id="visualizationContainer" class="text-center">
+                            <div class="placeholder-content">
+                                <i class="fas fa-water fa-5x text-muted mb-3"></i>
+                                <h4 class="text-muted">에크만 수송 시각화</h4>
+                                <p class="text-muted">왼쪽 패널에서 파라미터를 설정하고 계산을 시작하세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 정보 패널 -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="fas fa-lightbulb me-2"></i>에크만 수송 이론
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6><i class="fas fa-book me-2"></i>이론적 배경</h6>
+                                <p>에크만 수송은 바람에 의한 해수 표면의 마찰력과 지구 자전으로 인한 코리올리 힘의 상호작용으로 발생하는 해류 현상입니다. 바람이 해수 표면에 작용하면, 코리올리 힘의 영향으로 해류는 바람 방향에 대해 90도 각도로 흐르게 됩니다.</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6><i class="fas fa-calculator me-2"></i>수학적 표현</h6>
+                                <p>에크만 수송 벡터는 다음과 같이 표현됩니다:</p>
+                                <ul>
+                                    <li><strong>Mx = -τy / (ρf)</strong></li>
+                                    <li><strong>My = τx / (ρf)</strong></li>
+                                </ul>
+                                <p>여기서 τ는 바람 응력, ρ는 해수 밀도, f는 코리올리 매개변수입니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html> 

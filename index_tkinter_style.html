@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ekman Transport Visualizer</title>
+    
+    <!-- 다크/라이트 모드 자동 전환 CSS -->
+    <style>
+        /* CSS 변수로 테마 정의 */
+        :root {
+            --bg-primary: #f0f0f0;
+            --bg-secondary: white;
+            --border-color: #d0d0d0;
+            --text-primary: #000;
+            --text-secondary: #333;
+            --button-bg: linear-gradient(to bottom, #f0f0f0 0%, #e0e0e0 100%);
+            --button-hover: linear-gradient(to bottom, #f5f5f5 0%, #e5e5e5 100%);
+            --button-active: linear-gradient(to bottom, #e0e0e0 0%, #f0f0f0 100%);
+            --input-bg: white;
+            --slider-bg: #e0e0e0;
+            --plot-bg: white;
+            --chart-bg: white;
+            --chart-grid: lightgray;
+        }
+        
+        /* 다크 모드 테마 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #2b2b2b;
+                --bg-secondary: #1e1e1e;
+                --border-color: #404040;
+                --text-primary: #ffffff;
+                --text-secondary: #e0e0e0;
+                --button-bg: linear-gradient(to bottom, #404040 0%, #303030 100%);
+                --button-hover: linear-gradient(to bottom, #4a4a4a 0%, #3a3a3a 100%);
+                --button-active: linear-gradient(to bottom, #303030 0%, #404040 100%);
+                --input-bg: #2d2d2d;
+                --slider-bg: #404040;
+                --plot-bg: #1e1e1e;
+                --chart-bg: #2b2b2b;
+                --chart-grid: #404040;
+            }
+        }
+        
+        /* 기본 스타일 (테마 변수 사용) */
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            font-size: 9pt;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .main-window {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            display: flex;
+            min-height: calc(100vh - 16px);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        /* 왼쪽 제어 패널 */
+        .control-frame {
+            width: 320px;
+            background-color: var(--bg-primary);
+            border-right: 1px solid var(--border-color);
+            padding: 10px;
+            overflow-y: auto;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .labelframe {
+            border: 2px groove var(--border-color);
+            margin: 8px 0;
+            padding: 8px;
+            background-color: var(--bg-primary);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .labelframe-title {
+            font-weight: bold;
+            font-size: 9pt;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+            padding: 0 4px;
+            margin-left: 8px;
+            position: relative;
+            top: -16px;
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+        
+        /* 버튼 스타일 */
+        .tk-button {
+            background: var(--button-bg);
+            border: 1px outset var(--border-color);
+            color: var(--text-primary);
+            padding: 4px 8px;
+            margin: 2px;
+            font-size: 8pt;
+            cursor: pointer;
+            min-width: 60px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .tk-button:hover {
+            background: var(--button-hover);
+            border-color: var(--border-color);
+        }
+        
+        .tk-button:active {
+            border: 1px inset var(--border-color);
+            background: var(--button-active);
+        }
+        
+        /* 라벨 스타일 */
+        .tk-label {
+            font-size: 8pt;
+            color: var(--text-primary);
+            margin: 2px 0;
+            background-color: var(--bg-primary);
+            display: block;
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+        
+        /* 슬라이더 스타일 */
+        .tk-scale {
+            width: 200px;
+            height: 20px;
+            margin: 4px 0;
+            background: var(--slider-bg);
+            border: 1px inset var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .tk-scale::-webkit-slider-thumb {
+            width: 16px;
+            height: 16px;
+            background: var(--button-bg);
+            border: 1px outset var(--border-color);
+            cursor: pointer;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        
+        /* 콤보박스 스타일 */
+        .tk-combobox {
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            border: 1px inset var(--border-color);
+            padding: 2px;
+            font-size: 8pt;
+            width: 150px;
+            transition: all 0.3s ease;
+        }
+        
+        /* 라디오 버튼 */
+        .tk-radiobutton {
+            font-size: 8pt;
+            margin: 2px 0;
+            background-color: var(--bg-primary);
+            transition: background-color 0.3s ease;
+        }
+        
+        /* 오른쪽 플롯 영역 */
+        .plot-frame {
+            flex: 1;
+            background-color: var(--plot-bg);
+            border: 2px groove var(--border-color);
+            margin: 10px;
+            padding: 10px;
+            min-height: 600px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        /* 결과 표시 영역 */
+        .results-grid {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 4px;
+            font-size: 8pt;
+        }
+        
+        .result-label {
+            text-align: right;
+            padding-right: 8px;
+            font-weight: normal;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+        
+        .result-value {
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
+        }
+        
+        /* 버튼 그룹 */
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            margin: 4px 0;
+        }
+        
+        /* 슬라이더 컨테이너 */
+        .slider-container {
+            margin: 8px 0;
+        }
+        
+        .slider-value {
+            font-family: 'Courier New', monospace;
+            font-size: 8pt;
+            margin-left: 8px;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
+        }
+        
+        /* 제목 바 */
+        .title-bar {
+            background-color: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 8px;
+            font-weight: bold;
+            font-size: 10pt;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        /* 다크 모드에서 스크롤바 스타일 */
+        @media (prefers-color-scheme: dark) {
+            ::-webkit-scrollbar {
+                width: 12px;
+            }
+            
+            ::-webkit-scrollbar-track {
+                background: var(--bg-primary);
+            }
+            
+            ::-webkit-scrollbar-thumb {
+                background: var(--border-color);
+                border-radius: 6px;
+            }
+            
+            ::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+        }
+        
+        /* 다크 모드에서 입력 필드 스타일 개선 */
+        @media (prefers-color-scheme: dark) {
+            input[type="range"] {
+                accent-color: #4a9eff;
+            }
+            
+            option {
+                background-color: var(--input-bg);
+                color: var(--text-primary);
+            }
+        }
+        
+        /* 테마 전환 애니메이션 */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="title-bar">Ekman Transport Visualizer</div>
+    
+    <div class="main-window">
+        <!-- 왼쪽 제어 패널 (Tkinter GUI와 동일한 레이아웃) -->
+        <div class="control-frame">
+            
+            <!-- 언어 선택 -->
+            <div class="labelframe">
+                <div class="labelframe-title">언어 선택</div>
+                <label for="language" class="tk-label">Language:</label>
+                <select id="language" class="tk-combobox">
+                    <option value="en">English</option>
+                    <option value="ko">한국어</option>
+                    <option value="zh">中文</option>
+                    <option value="ja">日本語</option>
+                    <option value="es">Español</option>
+                    <option value="ru">Русский</option>
+                </select>
+            </div>
+            
+            <!-- 파라미터 설정 -->
+            <div class="labelframe">
+                <div class="labelframe-title">파라미터 설정</div>
+                
+                <!-- 바람 속도 -->
+                <div class="slider-container">
+                    <label for="wind_speed" class="tk-label">바람 속도 (m/s):</label>
+                    <input type="range" id="wind_speed" class="tk-scale" min="0" max="30" value="10" step="0.1">
+                    <span class="slider-value" id="wind_speed_value">10.0</span>
+                </div>
+                
+                <!-- 바람 방향 -->
+                <div class="slider-container">
+                    <label for="wind_direction" class="tk-label">바람 방향 (°):</label>
+                    <input type="range" id="wind_direction" class="tk-scale" min="0" max="360" value="0" step="1">
+                    <span class="slider-value" id="wind_direction_value">0</span>
+                </div>
+                
+                <!-- 위도 -->
+                <div class="slider-container">
+                    <label for="latitude" class="tk-label">위도 (°):</label>
+                    <input type="range" id="latitude" class="tk-scale" min="-90" max="90" value="30" step="1">
+                    <span class="slider-value" id="latitude_value">30</span>
+                </div>
+                
+                <!-- 깊이 -->
+                <div class="slider-container">
+                    <label for="depth" class="tk-label">깊이 (m):</label>
+                    <input type="range" id="depth" class="tk-scale" min="10" max="500" value="100" step="10">
+                    <span class="slider-value" id="depth_value">100</span>
+                </div>
+            </div>
+            
+            <!-- 시각화 타입 -->
+            <div class="labelframe">
+                <div class="labelframe-title">시각화 타입</div>
+                <div>
+                    <input type="radio" id="vis_3d" name="vis_type" value="3d" checked class="tk-radiobutton">
+                    <label for="vis_3d" class="tk-label" style="display: inline;">3D</label>
+                </div>
+                <div>
+                    <input type="radio" id="vis_2d" name="vis_type" value="2d" class="tk-radiobutton">
+                    <label for="vis_2d" class="tk-label" style="display: inline;">2D</label>
+                </div>
+            </div>
+            
+            <!-- 사전 설정 -->
+            <div class="labelframe">
+                <div class="labelframe-title">사전 설정</div>
+                <div class="button-group">
+                    <button class="tk-button" onclick="setPreset('normal')">일반</button>
+                    <button class="tk-button" onclick="setPreset('strong')">강풍</button>
+                    <button class="tk-button" onclick="setPreset('typhoon')">태풍</button>
+                </div>
+            </div>
+            
+            <!-- 지역 선택 -->
+            <div class="labelframe">
+                <div class="labelframe-title">지역 선택</div>
+                <select id="location" class="tk-combobox" aria-label="지역 선택">
+                    <option value="custom">사용자 설정</option>
+                    <option value="los_angeles">로스앤젤레스</option>
+                    <option value="busan">부산</option>
+                    <option value="north_pacific">북태평양</option>
+                    <option value="north_atlantic">북대서양</option>
+                    <option value="southern_ocean">남극해</option>
+                    <option value="equator">적도</option>
+                </select>
+            </div>
+            
+            <!-- 계산 버튼 -->
+            <div class="button-group" style="margin: 16px 0;">
+                <button id="calculate-btn" class="tk-button" style="width: 140px; height: 30px; font-weight: bold;" onclick="calculateAndVisualize()">계산 및 시각화</button>
+                <button id="export-btn" class="tk-button" style="width: 100px; height: 30px;" onclick="exportResults()">내보내기</button>
+            </div>
+            
+            <!-- 결과 표시 -->
+            <div class="labelframe">
+                <div class="labelframe-title">계산 결과</div>
+                <div class="results-grid">
+                    <div class="result-label">바람 응력:</div>
+                    <div class="result-value" id="wind_stress">-</div>
+                    
+                    <div class="result-label">에크만 깊이:</div>
+                    <div class="result-value" id="ekman_depth">-</div>
+                    
+                    <div class="result-label">총 수송량:</div>
+                    <div class="result-value" id="total_transport">-</div>
+                    
+                    <div class="result-label">에너지 전달률:</div>
+                    <div class="result-value" id="energy_transfer">-</div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <!-- 오른쪽 플롯 영역 -->
+        <div class="plot-frame">
+            <div id="plot-area" style="width: 100%; height: 100%;">
+                <div style="text-align: center; padding: 50px; color: #666;">
+                    <p>계산 및 시각화 버튼을 클릭하세요</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    
+    <!-- 에크만 수송 계산 및 시각화 JavaScript -->
+    <script>
+        // 전역 변수
+        let currentResults = null;
+        
+        // 위치 데이터
+        const LOCATIONS = {
+            'los_angeles': {lat: 34.0, wind: 3.0, wind_dir: 270},
+            'busan': {lat: 35.1, wind: 3.5, wind_dir: 135},
+            'north_pacific': {lat: 45.0, wind: 6.0, wind_dir: 135},
+            'north_atlantic': {lat: 50.0, wind: 8.0, wind_dir: 270},
+            'southern_ocean': {lat: -60.0, wind: 11.0, wind_dir: 270},
+            'equator': {lat: 2.0, wind: 2.0, wind_dir: 90}
+        };
+        
+        // 물리 상수
+        const RHO_WATER = 1025;  // kg/m³
+        const RHO_AIR = 1.225;   // kg/m³
+        const CD = 0.0013;       // 항력 계수
+        const OMEGA = 7.2921e-5; // 지구 자전 각속도 (rad/s)
+        
+        // 슬라이더 값 업데이트
+        function updateSliderValues() {
+            document.getElementById('wind_speed_value').textContent = parseFloat(document.getElementById('wind_speed').value).toFixed(1);
+            document.getElementById('wind_direction_value').textContent = parseFloat(document.getElementById('wind_direction').value).toFixed(0);
+            document.getElementById('latitude_value').textContent = parseFloat(document.getElementById('latitude').value).toFixed(0);
+            document.getElementById('depth_value').textContent = parseFloat(document.getElementById('depth').value).toFixed(0);
+        }
+        
+        // 사전 설정
+        function setPreset(type) {
+            if (type === 'normal') {
+                document.getElementById('wind_speed').value = 10.0;
+                document.getElementById('wind_direction').value = 0;
+                document.getElementById('latitude').value = 30;
+                document.getElementById('depth').value = 100;
+            } else if (type === 'strong') {
+                document.getElementById('wind_speed').value = 20.0;
+                document.getElementById('wind_direction').value = 45;
+                document.getElementById('latitude').value = 45;
+                document.getElementById('depth').value = 150;
+            } else if (type === 'typhoon') {
+                document.getElementById('wind_speed').value = 30.0;
+                document.getElementById('wind_direction').value = 90;
+                document.getElementById('latitude').value = 25;
+                document.getElementById('depth').value = 200;
+            }
+            updateSliderValues();
+        }
+        
+        // 지역 선택
+        function onLocationSelect() {
+            const selected = document.getElementById('location').value;
+            if (selected !== 'custom' && LOCATIONS[selected]) {
+                const loc = LOCATIONS[selected];
+                document.getElementById('latitude').value = loc.lat;
+                document.getElementById('wind_speed').value = loc.wind;
+                document.getElementById('wind_direction').value = loc.wind_dir;
+                updateSliderValues();
+            }
+        }
+        
+        // 코리올리 매개변수 계산
+        function calculateCoriolisParameter(latitude) {
+            return 2 * OMEGA * Math.sin(latitude * Math.PI / 180);
+        }
+        
+        // 에크만 수송 계산
+        function calculateEkmanTransport(windSpeed, windDirection, latitude, depth) {
+            if (latitude === 0) latitude = 1e-6; // 0으로 나누기 방지
+            
+            const f = calculateCoriolisParameter(latitude);
+            const windStress = RHO_AIR * CD * windSpeed * windSpeed;
+            const windDirRad = windDirection * Math.PI / 180;
+            
+            const tauX = windStress * Math.cos(windDirRad);
+            const tauY = windStress * Math.sin(windDirRad);
+            
+            const Mx = -tauY / (RHO_WATER * f);
+            const My = tauX / (RHO_WATER * f);
+            
+            const K = 0.01; // 수직 난류 점성 계수
+            const ekmanDepth = Math.PI * Math.sqrt(2 * K / Math.abs(f));
+            
+            // 에크만 나선 계산
+            const zLevels = [];
+            const uVel = [];
+            const vVel = [];
+            
+            for (let i = 0; i < 50; i++) {
+                const z = (depth / 49) * i;
+                zLevels.push(z);
+                
+                const a = Math.sqrt(Math.abs(f) / (2 * K));
+                const factor = Math.exp(-a * z) / (RHO_WATER * Math.sqrt(2 * K * Math.abs(f)));
+                const cosAz = Math.cos(a * z);
+                const sinAz = Math.sin(a * z);
+                const sgnF = Math.sign(f);
+                
+                const u = factor * (tauX * cosAz - sgnF * tauY * sinAz);
+                const v = factor * (sgnF * tauX * sinAz + tauY * cosAz);
+                
+                uVel.push(u);
+                vVel.push(v);
+            }
+            
+            const energyTransfer = tauX * uVel[0] + tauY * vVel[0];
+            
+            return {
+                windSpeed, windDirection, latitude, depth,
+                windStress, tauX, tauY, Mx, My, ekmanDepth,
+                zLevels, uVel, vVel, f, energyTransfer
+            };
+        }
+        
+        // 테마 감지 함수
+        function isDarkMode() {
+            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+        
+        // 테마에 따른 색상 반환
+        function getThemeColors() {
+            const dark = isDarkMode();
+            return {
+                background: dark ? '#2b2b2b' : 'white',
+                paper: dark ? '#1e1e1e' : 'white',
+                text: dark ? '#ffffff' : '#000000',
+                grid: dark ? '#404040' : 'lightgray',
+                font: dark ? '#e0e0e0' : '#333333'
+            };
+        }
+        
+        // 2D 시각화 생성
+        function create2DPlot(results) {
+            const traces = [];
+            const colors = getThemeColors();
+            
+            // 1. 바람 vs 수송 벡터
+            const windDirRad = results.windDirection * Math.PI / 180;
+            const windX = results.windSpeed * Math.cos(windDirRad);
+            const windY = results.windSpeed * Math.sin(windDirRad);
+            
+            traces.push({
+                x: [0, windX], y: [0, windY],
+                mode: 'lines+markers',
+                line: {color: '#FF6B35', width: 4},
+                marker: {size: 10},
+                name: `바람 ${results.windSpeed.toFixed(1)} m/s`,
+                xaxis: 'x', yaxis: 'y'
+            });
+            
+            const transportScale = 1e6;
+            traces.push({
+                x: [0, results.Mx * transportScale], 
+                y: [0, results.My * transportScale],
+                mode: 'lines+markers',
+                line: {color: '#4A9EFF', width: 4},
+                marker: {size: 10},
+                name: `수송 ${Math.sqrt(results.Mx**2 + results.My**2).toExponential(2)} m³/s`,
+                xaxis: 'x', yaxis: 'y'
+            });
+            
+            // 2. 에크만 나선
+            traces.push({
+                x: results.uVel, y: results.vVel,
+                mode: 'lines+markers',
+                line: {color: '#FF4081', width: 3},
+                marker: {
+                    size: 6,
+                    color: results.zLevels,
+                    colorscale: 'Viridis',
+                    showscale: true,
+                    colorbar: {
+                        title: {text: "깊이 (m)", font: {color: colors.text}}, 
+                        x: 0.48, y: 0.75, len: 0.25,
+                        bgcolor: colors.background,
+                        bordercolor: colors.grid,
+                        tickfont: {color: colors.text}
+                    }
+                },
+                name: '에크만 나선',
+                xaxis: 'x2', yaxis: 'y2'
+            });
+            
+            // 3. 깊이별 속도 프로파일
+            traces.push({
+                x: results.uVel, y: results.zLevels.map(z => -z),
+                mode: 'lines+markers',
+                line: {color: '#1F77B4', width: 3},
+                marker: {size: 4},
+                name: 'U 속도 (동-서)',
+                xaxis: 'x3', yaxis: 'y3'
+            });
+            
+            traces.push({
+                x: results.vVel, y: results.zLevels.map(z => -z),
+                mode: 'lines+markers',
+                line: {color: '#FF7F0E', width: 3},
+                marker: {size: 4},
+                name: 'V 속도 (남-북)',
+                xaxis: 'x3', yaxis: 'y3'
+            });
+            
+            // 4. 수송 성분 바 차트
+            traces.push({
+                x: ['Mx (동-서)', 'My (남-북)'],
+                y: [results.Mx, results.My],
+                type: 'bar',
+                marker: {color: ['#1F77B4', '#FF7F0E']},
+                name: '수송 성분',
+                xaxis: 'x4', yaxis: 'y4'
+            });
+            
+            const layout = {
+                title: {
+                    text: `🌊 에크만 수송 분석 (위도: ${results.latitude.toFixed(1)}°)`,
+                    font: {color: colors.text, size: 16}
+                },
+                grid: {rows: 2, columns: 2, pattern: 'independent'},
+                
+                // 모든 축 스타일링
+                xaxis: {
+                    title: {text: '동-서 방향 (m/s)', font: {color: colors.text}}, 
+                    domain: [0, 0.45],
+                    gridcolor: colors.grid,
+                    tickfont: {color: colors.text},
+                    linecolor: colors.grid
+                },
+                yaxis: {
+                    title: {text: '남-북 방향 (m/s)', font: {color: colors.text}}, 
+                    domain: [0.55, 1],
+                    gridcolor: colors.grid,
+                    tickfont: {color: colors.text},
+                    linecolor: colors.grid
+                },
+                xaxis2: {
+                    title: {text: 'U 속도 (m/s)', font: {color: colors.text}}, 
+                    domain: [0.55, 1],
+                    gridcolor: colors.grid,
+                    tickfont: {color: colors.text},
+                    linecolor: colors.grid
+                },
+                yaxis2: {
+                    title: {text: 'V 속도 (m/s)', font: {color: colors.text}}, 
+                    domain: [0.55, 1],
+                    gridcolor: colors.grid,
+                    tickfont: {color: colors.text},
+                    linecolor: colors.grid
+                },
+                xaxis3: {
+                    title: {text: '속도 (m/s)', font: {color: colors.text}}, 
+                    domain: [0, 0.45],
+                    gridcolor: colors.grid,
+                    tickfont: {color: colors.text},
+                    linecolor: colors.grid
+                },
+                yaxis3: {
+                    title: {text: '깊이 (m)', font: {color: colors.text}}, 
+                    domain: [0, 0.45],
+                    gridcolor: colors.grid,
+                    tickfont: {color: colors.text},
+                    linecolor: colors.grid
+                },
+                xaxis4: {
+                    title: {text: '성분', font: {color: colors.text}}, 
+                    domain: [0.55, 1],
+                    gridcolor: colors.grid,
+                    tickfont: {color: colors.text},
+                    linecolor: colors.grid
+                },
+                yaxis4: {
+                    title: {text: '수송량 (m³/s)', font: {color: colors.text}}, 
+                    domain: [0, 0.45],
+                    gridcolor: colors.grid,
+                    tickfont: {color: colors.text},
+                    linecolor: colors.grid
+                },
+                
+                height: 800,
+                showlegend: true,
+                font: {size: 12, color: colors.text},
+                plot_bgcolor: colors.background,
+                paper_bgcolor: colors.paper,
+                legend: {
+                    font: {color: colors.text},
+                    bgcolor: 'rgba(0,0,0,0)'
+                }
+            };
+            
+            return {data: traces, layout: layout};
+        }
+        
+        // 3D 시각화 생성
+        function create3DPlot(results) {
+            const traces = [];
+            const colors = getThemeColors();
+            const speeds = results.uVel.map((u, i) => Math.sqrt(u*u + results.vVel[i]*results.vVel[i]));
+            
+            // 에크만 나선 3D
+            traces.push({
+                x: results.uVel,
+                y: results.vVel,
+                z: results.zLevels.map(z => -z),
+                mode: 'lines+markers',
+                type: 'scatter3d',
+                line: {
+                    color: speeds,
+                    colorscale: 'Viridis',
+                    width: 8,
+                    colorbar: {
+                        title: {text: "속도 크기 (m/s)", font: {color: colors.text}},
+                        bgcolor: colors.background,
+                        bordercolor: colors.grid,
+                        tickfont: {color: colors.text}
+                    }
+                },
+                marker: {size: 4, color: speeds, colorscale: 'Viridis'},
+                name: '에크만 나선'
+            });
+            
+            // 바람 벡터
+            const windDirRad = results.windDirection * Math.PI / 180;
+            const windX = results.windSpeed * Math.cos(windDirRad) * 0.01;
+            const windY = results.windSpeed * Math.sin(windDirRad) * 0.01;
+            
+            traces.push({
+                x: [0, windX], y: [0, windY], z: [10, 10],
+                mode: 'lines+markers',
+                type: 'scatter3d',
+                line: {color: '#FF6B35', width: 10},
+                marker: {size: 8, color: '#FF6B35'},
+                name: `🌬️ 바람 ${results.windSpeed.toFixed(1)} m/s`
+            });
+            
+            // 에크만 깊이별 벡터 필드 표시
+            const step = Math.max(1, Math.floor(results.zLevels.length / 8));
+            for (let i = 0; i < results.zLevels.length; i += step) {
+                const scale = 0.02;
+                const alpha = 0.6;
+                traces.push({
+                    x: [0, results.uVel[i] * scale],
+                    y: [0, results.vVel[i] * scale],
+                    z: [-results.zLevels[i], -results.zLevels[i]],
+                    mode: 'lines',
+                    type: 'scatter3d',
+                    line: {
+                        color: `rgba(${isDarkMode() ? '100, 149, 237' : '30, 144, 255'}, ${alpha})`,
+                        width: 4
+                    },
+                    showlegend: false,
+                    hovertemplate: `깊이: ${results.zLevels[i].toFixed(1)}m<br>속도: ${speeds[i].toFixed(4)} m/s<extra></extra>`
+                });
+            }
+            
+            const layout = {
+                title: {
+                    text: `🌊 3D 에크만 수송 시각화 (위도: ${results.latitude.toFixed(1)}°)`,
+                    font: {color: colors.text, size: 16}
+                },
+                scene: {
+                    bgcolor: colors.background,
+                    xaxis: {
+                        title: {text: 'U 속도 (동-서, m/s)', font: {color: colors.text}},
+                        gridcolor: colors.grid,
+                        tickfont: {color: colors.text},
+                        linecolor: colors.grid,
+                        backgroundcolor: colors.background
+                    },
+                    yaxis: {
+                        title: {text: 'V 속도 (남-북, m/s)', font: {color: colors.text}},
+                        gridcolor: colors.grid,
+                        tickfont: {color: colors.text},
+                        linecolor: colors.grid,
+                        backgroundcolor: colors.background
+                    },
+                    zaxis: {
+                        title: {text: '깊이 (m)', font: {color: colors.text}},
+                        gridcolor: colors.grid,
+                        tickfont: {color: colors.text},
+                        linecolor: colors.grid,
+                        backgroundcolor: colors.background
+                    },
+                    camera: {
+                        eye: {x: 1.5, y: 1.5, z: 1.2}
+                    }
+                },
+                width: 900,
+                height: 700,
+                font: {size: 12, color: colors.text},
+                plot_bgcolor: colors.background,
+                paper_bgcolor: colors.paper,
+                legend: {
+                    font: {color: colors.text},
+                    bgcolor: 'rgba(0,0,0,0)'
+                }
+            };
+            
+            return {data: traces, layout: layout};
+        }
+        
+        // 메인 계산 및 시각화 함수
+        function calculateAndVisualize() {
+            try {
+                console.log("🔄 계산 시작...");
+                
+                const windSpeed = parseFloat(document.getElementById('wind_speed').value);
+                const windDirection = parseFloat(document.getElementById('wind_direction').value);
+                let latitude = parseFloat(document.getElementById('latitude').value);
+                const depth = parseFloat(document.getElementById('depth').value);
+                
+                if (latitude === 0) {
+                    latitude = 1;
+                    document.getElementById('latitude').value = 1;
+                    updateSliderValues();
+                }
+                
+                const results = calculateEkmanTransport(windSpeed, windDirection, latitude, depth);
+                currentResults = results;
+                
+                const visType = document.querySelector('input[name="vis_type"]:checked').value;
+                
+                let plotData;
+                if (visType === '3d') {
+                    plotData = create3DPlot(results);
+                } else {
+                    plotData = create2DPlot(results);
+                }
+                
+                const config = {
+                    displayModeBar: true,
+                    displaylogo: false,
+                    modeBarButtonsToAdd: ['downloadpng'],
+                    toImageButtonOptions: {
+                        format: 'png',
+                        filename: 'ekman_transport_plot',
+                        height: 800,
+                        width: 1200,
+                        scale: 2
+                    }
+                };
+                
+                document.getElementById('plot-area').innerHTML = '';
+                Plotly.newPlot('plot-area', plotData.data, plotData.layout, config);
+                
+                updateResultsDisplay(results);
+                
+                console.log("✅ 계산 및 시각화 완료!");
+                
+            } catch (error) {
+                console.error("❌ 오류 발생:", error);
+                document.getElementById('plot-area').innerHTML = 
+                    `<div style="color: red; text-align: center; padding: 50px; font-size: 16px;">
+                        오류: ${error.message}<br>파라미터를 확인해주세요.
+                    </div>`;
+            }
+        }
+        
+        // 결과 표시 업데이트
+        function updateResultsDisplay(results) {
+            document.getElementById('wind_stress').textContent = 
+                `${(results.windStress * 1000).toFixed(3)} mN/m²`;
+            document.getElementById('ekman_depth').textContent = 
+                `${results.ekmanDepth.toFixed(2)} m`;
+            
+            const totalTransport = Math.sqrt(results.Mx**2 + results.My**2);
+            document.getElementById('total_transport').textContent = 
+                `${totalTransport.toExponential(3)} m³/s`;
+            document.getElementById('energy_transfer').textContent = 
+                `${(results.energyTransfer * 1000).toFixed(4)} mW/m²`;
+        }
+        
+        // 내보내기
+        function exportResults() {
+            if (!currentResults) {
+                console.log("❌ 먼저 계산을 수행하세요.");
+                return;
+            }
+            
+            const exportData = {
+                '입력 파라미터': {
+                    '바람속도 (m/s)': currentResults.windSpeed,
+                    '바람방향 (°)': currentResults.windDirection,
+                    '위도 (°)': currentResults.latitude,
+                    '깊이 (m)': currentResults.depth
+                },
+                '계산 결과': {
+                    '바람응력 (N/m²)': currentResults.windStress.toExponential(6),
+                    '에크만깊이 (m)': currentResults.ekmanDepth.toFixed(2),
+                    'Mx 수송 (m³/s)': currentResults.Mx.toExponential(6),
+                    'My 수송 (m³/s)': currentResults.My.toExponential(6),
+                    '총 수송량 (m³/s)': Math.sqrt(currentResults.Mx**2 + currentResults.My**2).toExponential(6),
+                    '에너지전달률 (W/m²)': currentResults.energyTransfer.toExponential(6),
+                    '코리올리 매개변수': currentResults.f.toExponential(6)
+                }
+            };
+            
+            console.log("📊 내보내기 데이터:");
+            console.log(JSON.stringify(exportData, null, 2));
+        }
+        
+        // 테마 변경 감지 및 차트 업데이트
+        function handleThemeChange() {
+            if (currentResults) {
+                // 기존 차트가 있으면 업데이트
+                const visType = document.querySelector('input[name="vis_type"]:checked').value;
+                let plotData;
+                
+                if (visType === '3d') {
+                    plotData = create3DPlot(currentResults);
+                } else {
+                    plotData = create2DPlot(currentResults);
+                }
+                
+                const config = {
+                    displayModeBar: true,
+                    displaylogo: false,
+                    modeBarButtonsToAdd: ['downloadpng'],
+                    toImageButtonOptions: {
+                        format: 'png',
+                        filename: 'ekman_transport_plot',
+                        height: 800,
+                        width: 1200,
+                        scale: 2
+                    }
+                };
+                
+                Plotly.newPlot('plot-area', plotData.data, plotData.layout, config);
+                console.log("🎨 테마 변경에 따라 차트가 업데이트되었습니다!");
+            }
+        }
+        
+        // 이벤트 리스너 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            // 슬라이더 이벤트
+            ['wind_speed', 'wind_direction', 'latitude', 'depth'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updateSliderValues);
+            });
+            
+            // 지역 선택 이벤트
+            document.getElementById('location').addEventListener('change', onLocationSelect);
+            
+            // 시스템 테마 변경 감지
+            if (window.matchMedia) {
+                const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+                mediaQuery.addEventListener('change', handleThemeChange);
+                
+                // 초기 테마 상태 로그
+                console.log(`🎨 현재 테마: ${isDarkMode() ? '다크 모드' : '라이트 모드'}`);
+            }
+            
+            // 시각화 타입 변경 이벤트
+            document.querySelectorAll('input[name="vis_type"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (currentResults) {
+                        handleThemeChange(); // 테마에 맞게 다시 렌더링
+                    }
+                });
+            });
+            
+            // 초기값 설정
+            updateSliderValues();
+            
+            console.log("🌊 Ekman Transport Visualizer 로드 완료!");
+            console.log("📊 파이썬 스타일 시각화가 준비되었습니다.");
+            console.log("🌗 자동 다크/라이트 모드 전환이 활성화되었습니다.");
+        });
+    </script>
+</body>
+</html> 
