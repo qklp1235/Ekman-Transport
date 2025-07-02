@@ -1269,33 +1269,72 @@
         function updateUITexts() {
             // 제목 바
             document.querySelector('.title-bar').textContent = t('app_title');
-            document.querySelector('.mobile-menu-title').textContent = '⚙️ ' + t('app_title').replace('Ekman Transport Visualizer', '제어판').replace('Ekman Transport Visualizer', 'Control Panel').replace('埃克曼输运可视化', '控制面板').replace('エクマン輸送可視化', 'コントロールパネル').replace('Visualizador de Transporte de Ekman', 'Panel de Control').replace('Визуализатор Переноса Экмана', 'Панель Управления');
             
-            // 라벨프레임 제목들
-            document.querySelectorAll('.labelframe-title').forEach((element, index) => {
-                const titles = [
-                    'language_select',
-                    'param_settings', 
-                    'vis_type',
-                    'preset_settings',
-                    'location_select',
-                    '', // 버튼 그룹
-                    'results_title'
-                ];
-                if (titles[index]) {
-                    element.textContent = t(titles[index]);
+            // 모바일 메뉴 제목 - 언어에 따라 다르게 설정
+            const mobileTitle = currentLanguage === 'ko' ? '⚙️ 제어판' :
+                               currentLanguage === 'zh' ? '⚙️ 控制面板' :
+                               currentLanguage === 'ja' ? '⚙️ コントロールパネル' :
+                               currentLanguage === 'es' ? '⚙️ Panel de Control' :
+                               currentLanguage === 'ru' ? '⚙️ Панель Управления' :
+                               '⚙️ Control Panel';
+            document.querySelector('.mobile-menu-title').textContent = mobileTitle;
+            
+            // 라벨프레임 제목들을 직접 선택하여 업데이트
+            const labelframeTitles = document.querySelectorAll('.labelframe-title');
+            labelframeTitles.forEach((element) => {
+                const currentText = element.textContent.trim();
+                
+                // 언어 선택
+                if (currentText.includes('언어') || currentText.includes('Language') || currentText.includes('语言') || 
+                    currentText.includes('言語') || currentText.includes('Idioma') || currentText.includes('Язык')) {
+                    element.textContent = t('language_select');
+                }
+                // 파라미터 설정
+                else if (currentText.includes('파라미터') || currentText.includes('Parameter') || currentText.includes('参数') || 
+                         currentText.includes('パラメータ') || currentText.includes('Parámetros') || currentText.includes('Параметр')) {
+                    element.textContent = t('param_settings');
+                }
+                // 시각화 타입
+                else if (currentText.includes('시각화') || currentText.includes('Visualization') || currentText.includes('可视化') || 
+                         currentText.includes('可視化') || currentText.includes('Visualización') || currentText.includes('Визуализации')) {
+                    element.textContent = t('vis_type');
+                }
+                // 사전 설정
+                else if (currentText.includes('사전') || currentText.includes('Preset') || currentText.includes('预设') || 
+                         currentText.includes('プリセット') || currentText.includes('Predefinida') || currentText.includes('Предустановки')) {
+                    element.textContent = t('preset_settings');
+                }
+                // 지역/위치 선택
+                else if (currentText.includes('지역') || currentText.includes('Location') || currentText.includes('位置') || 
+                         currentText.includes('場所') || currentText.includes('Ubicación') || currentText.includes('Местоположения')) {
+                    element.textContent = t('location_select');
+                }
+                // 계산 결과
+                else if (currentText.includes('결과') || currentText.includes('Results') || currentText.includes('结果') || 
+                         currentText.includes('結果') || currentText.includes('Resultados') || currentText.includes('Результаты')) {
+                    element.textContent = t('results_title');
                 }
             });
             
             // 슬라이더 라벨들
-            document.querySelector('label[for="wind_speed"]').textContent = t('wind_speed') + ':';
-            document.querySelector('label[for="wind_direction"]').textContent = t('wind_direction') + ':';
-            document.querySelector('label[for="latitude"]').textContent = t('latitude') + ':';
-            document.querySelector('label[for="depth"]').textContent = t('depth') + ':';
+            const windSpeedLabel = document.querySelector('label[for="wind_speed"]');
+            if (windSpeedLabel) windSpeedLabel.textContent = t('wind_speed') + ':';
+            
+            const windDirectionLabel = document.querySelector('label[for="wind_direction"]');
+            if (windDirectionLabel) windDirectionLabel.textContent = t('wind_direction') + ':';
+            
+            const latitudeLabel = document.querySelector('label[for="latitude"]');
+            if (latitudeLabel) latitudeLabel.textContent = t('latitude') + ':';
+            
+            const depthLabel = document.querySelector('label[for="depth"]');
+            if (depthLabel) depthLabel.textContent = t('depth') + ':';
             
             // 라디오 버튼 라벨들
-            document.querySelector('label[for="vis_3d"]').textContent = t('vis_3d');
-            document.querySelector('label[for="vis_2d"]').textContent = t('vis_2d');
+            const vis3dLabel = document.querySelector('label[for="vis_3d"]');
+            if (vis3dLabel) vis3dLabel.textContent = t('vis_3d');
+            
+            const vis2dLabel = document.querySelector('label[for="vis_2d"]');
+            if (vis2dLabel) vis2dLabel.textContent = t('vis_2d');
             
             // 버튼들
             document.querySelectorAll('.tk-button').forEach(button => {
@@ -1313,11 +1352,30 @@
                 }
             });
             
-            // 결과 라벨들
-            document.querySelectorAll('.result-label').forEach((element, index) => {
-                const labels = ['wind_stress', 'ekman_depth', 'total_transport', 'energy_transfer'];
-                if (labels[index]) {
-                    element.textContent = t(labels[index]);
+            // 결과 라벨들을 직접 선택하여 업데이트
+            const resultLabels = document.querySelectorAll('.result-label');
+            resultLabels.forEach((element) => {
+                const currentText = element.textContent.trim();
+                
+                // 바람 응력
+                if (currentText.includes('바람') || currentText.includes('Wind') || currentText.includes('风') || 
+                    currentText.includes('風') || currentText.includes('Viento') || currentText.includes('Ветра')) {
+                    element.textContent = t('wind_stress');
+                }
+                // 에크만 깊이
+                else if (currentText.includes('에크만') || currentText.includes('Ekman') || currentText.includes('埃克曼') || 
+                         currentText.includes('エクマン') || currentText.includes('Экмана')) {
+                    element.textContent = t('ekman_depth');
+                }
+                // 총 수송량
+                else if (currentText.includes('수송') || currentText.includes('Transport') || currentText.includes('输运') || 
+                         currentText.includes('輸送') || currentText.includes('Transporte') || currentText.includes('Перенос')) {
+                    element.textContent = t('total_transport');
+                }
+                // 에너지 전달률
+                else if (currentText.includes('에너지') || currentText.includes('Energy') || currentText.includes('能量') || 
+                         currentText.includes('エネルギー') || currentText.includes('Energía') || currentText.includes('Энергии')) {
+                    element.textContent = t('energy_transfer');
                 }
             });
             
@@ -2383,6 +2441,37 @@
                 `${totalTransport.toExponential(3)} m³/s`;
             document.getElementById('energy_transfer').textContent = 
                 `${(results.energyTransfer * 1000).toFixed(4)} mW/m²`;
+            
+            // 결과 표시 후 라벨들을 현재 언어로 업데이트
+            setTimeout(() => {
+                const resultLabels = document.querySelectorAll('.result-label');
+                resultLabels.forEach((element) => {
+                    const currentText = element.textContent.trim();
+                    
+                    // 바람 응력
+                    if (currentText.includes('바람') || currentText.includes('Wind') || currentText.includes('风') || 
+                        currentText.includes('風') || currentText.includes('Viento') || currentText.includes('Ветра') || currentText.includes('Напряжение')) {
+                        element.textContent = t('wind_stress');
+                    }
+                    // 에크만 깊이
+                    else if (currentText.includes('에크만') || currentText.includes('Ekman') || currentText.includes('埃克曼') || 
+                             currentText.includes('エクマン') || currentText.includes('Экмана') || currentText.includes('Глубина')) {
+                        element.textContent = t('ekman_depth');
+                    }
+                    // 총 수송량
+                    else if (currentText.includes('수송') || currentText.includes('Transport') || currentText.includes('输运') || 
+                             currentText.includes('輸送') || currentText.includes('Transporte') || currentText.includes('Перенос')) {
+                        element.textContent = t('total_transport');
+                    }
+                    // 에너지 전달률
+                    else if (currentText.includes('에너지') || currentText.includes('Energy') || currentText.includes('能量') || 
+                             currentText.includes('エネルギー') || currentText.includes('Energía') || currentText.includes('Энергии') || currentText.includes('Передача')) {
+                        element.textContent = t('energy_transfer');
+                    }
+                });
+                
+                console.log(`🌍 결과 라벨이 ${currentLanguage} 언어로 업데이트되었습니다.`);
+            }, 10);
         }
         
         // 내보내기
@@ -2531,8 +2620,11 @@
                 console.log(`🌍 언어가 ${this.value}로 변경되었습니다.`);
             });
             
-            // 초기 UI 텍스트 설정
-            updateUITexts();
+            // 초기 UI 텍스트 설정 (약간의 지연을 두어 DOM이 완전히 로드된 후 실행)
+            setTimeout(() => {
+                updateUITexts();
+                console.log(`🌍 초기 언어 설정 완료: ${currentLanguage}`);
+            }, 100);
             
             // 슬라이더 이벤트
             ['wind_speed', 'wind_direction', 'latitude', 'depth'].forEach(id => {
@@ -2610,6 +2702,77 @@
             console.log("📱 반응형 디자인 (데스크톱/태블릿/모바일) 지원");
             console.log(`🌍 다중언어 지원 활성화 (현재: ${currentLanguage})`);
         });
+        
+        // 언어 강제 업데이트 함수 (디버깅 및 수동 업데이트용)
+        function forceUpdateLanguage(lang = currentLanguage) {
+            currentLanguage = lang;
+            localStorage.setItem('ekman_language', lang);
+            
+            // 언어 선택 드롭다운 업데이트
+            const languageSelect = document.getElementById('language');
+            if (languageSelect) {
+                languageSelect.value = lang;
+            }
+            
+            // UI 텍스트 강제 업데이트
+            updateUITexts();
+            
+            // 차트가 있다면 다시 그리기
+            if (currentResults) {
+                const visType = document.querySelector('input[name="vis_type"]:checked').value;
+                let plotData;
+                let config;
+                
+                if (isMobile()) {
+                    if (visType === '3d') {
+                        plotData = create3DPlot(currentResults);
+                    } else {
+                        plotData = createMobile2DPlot(currentResults);
+                    }
+                    config = {
+                        displayModeBar: true,
+                        displaylogo: false,
+                        responsive: true,
+                        scrollZoom: true,
+                        doubleClick: 'reset',
+                        touchAction: 'auto'
+                    };
+                } else if (isTablet()) {
+                    if (visType === '3d') {
+                        plotData = create3DPlot(currentResults);
+                    } else {
+                        plotData = create2DPlot(currentResults);
+                    }
+                    config = {
+                        displayModeBar: true,
+                        displaylogo: false,
+                        responsive: true
+                    };
+                } else {
+                    if (visType === '3d') {
+                        plotData = create3DPlot(currentResults);
+                    } else {
+                        plotData = create2DPlot(currentResults);
+                    }
+                    config = {
+                        displayModeBar: true,
+                        displaylogo: false,
+                        responsive: true
+                    };
+                }
+                
+                document.getElementById('plot-area').innerHTML = '';
+                Plotly.newPlot('plot-area', plotData.data, plotData.layout, config);
+            }
+            
+            console.log(`🌍 언어 강제 업데이트 완료: ${lang}`);
+            console.log("💡 브라우저 콘솔에서 forceUpdateLanguage('ru') 같은 형식으로 언어를 변경할 수 있습니다.");
+        }
+        
+        // 전역 함수로 등록 (브라우저 콘솔에서 사용 가능)
+        window.forceUpdateLanguage = forceUpdateLanguage;
+        
+        // 전역 변수
     </script>
 </body>
 </html> 
