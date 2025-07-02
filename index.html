@@ -380,114 +380,116 @@
             opacity: 1;
         }
         
-        /* 메뉴 패널 개선 */
-        .mobile-menu-panel {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 85%;
-            max-width: 350px;
-            height: 100vh;
-            background: var(--bg-primary);
-            z-index: 1001;
-            padding: 80px 20px 20px 20px;
-            overflow-x: auto;
-            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border-right: 3px solid var(--border-color);
-            box-shadow: 5px 0 25px rgba(0,0,0,0.3);
+        /* 메뉴 패널 개선 (모바일에서만 적용) */
+        @media screen and (max-width: 767px) {
+            .mobile-menu-panel {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 85%;
+                max-width: 350px;
+                height: 100vh;
+                background: var(--bg-primary);
+                z-index: 1001;
+                padding: 80px 20px 20px 20px;
+                overflow-x: auto;
+                transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                border-right: 3px solid var(--border-color);
+                box-shadow: 5px 0 25px rgba(0,0,0,0.3);
+            }
         }
         
-        .mobile-menu-panel.active {
-            left: 0;
-        }
+            .mobile-menu-panel.active {
+                left: 0;
+            }
+            
+            /* 메뉴 헤더 */
+            .mobile-menu-header {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 70px;
+                background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
+                border-bottom: 2px solid var(--border-color);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 20px;
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+            
+            .mobile-menu-title {
+                font-size: 18px;
+                font-weight: bold;
+                color: var(--text-primary);
+                margin: 0;
+            }
+            
+            .mobile-menu-close {
+                display: block;
+                width: 40px;
+                height: 40px;
+                background: transparent;
+                border: 2px solid var(--border-color);
+                border-radius: 8px;
+                cursor: pointer;
+                position: relative;
+                transition: all 0.3s ease;
+                touch-action: manipulation;
+            }
+            
+            .mobile-menu-close:hover {
+                background: var(--button-hover);
+                transform: rotate(90deg);
+            }
+            
+            .mobile-menu-close:active {
+                transform: rotate(90deg) scale(0.9);
+            }
+            
+            .mobile-menu-close::before,
+            .mobile-menu-close::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 20px;
+                height: 2px;
+                background: var(--text-primary);
+                border-radius: 1px;
+                transition: all 0.3s ease;
+            }
+            
+            .mobile-menu-close::before {
+                transform: translate(-50%, -50%) rotate(45deg);
+            }
+            
+            .mobile-menu-close::after {
+                transform: translate(-50%, -50%) rotate(-45deg);
+            }
+            
+            /* 메뉴 아이템 애니메이션 */
+            .mobile-menu-item {
+                opacity: 0;
+                transform: translateX(-30px);
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            
+            .mobile-menu-panel.active .mobile-menu-item {
+                opacity: 1;
+                transform: translateX(0);
+            }
         
-        /* 메뉴 헤더 */
-        .mobile-menu-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
-            border-bottom: 2px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-        
-        .mobile-menu-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--text-primary);
-            margin: 0;
-        }
-        
-        .mobile-menu-close {
-            display: none;
-            width: 40px;
-            height: 40px;
-            background: transparent;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s ease;
-            touch-action: manipulation;
-        }
-        
-        .mobile-menu-close:hover {
-            background: var(--button-hover);
-            transform: rotate(90deg);
-        }
-        
-        .mobile-menu-close:active {
-            transform: rotate(90deg) scale(0.9);
-        }
-        
-        .mobile-menu-close::before,
-        .mobile-menu-close::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 20px;
-            height: 2px;
-            background: var(--text-primary);
-            border-radius: 1px;
-            transition: all 0.3s ease;
-        }
-        
-        .mobile-menu-close::before {
-            transform: translate(-50%, -50%) rotate(45deg);
-        }
-        
-        .mobile-menu-close::after {
-            transform: translate(-50%, -50%) rotate(-45deg);
-        }
-        
-        /* 메뉴 아이템 애니메이션 */
-        .mobile-menu-item {
-            opacity: 0;
-            transform: translateX(-30px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .mobile-menu-panel.active .mobile-menu-item {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        
-        /* 스태거드 애니메이션 지연 */
-        .mobile-menu-panel.active .mobile-menu-item:nth-child(1) { transition-delay: 0.1s; }
-        .mobile-menu-panel.active .mobile-menu-item:nth-child(2) { transition-delay: 0.15s; }
-        .mobile-menu-panel.active .mobile-menu-item:nth-child(3) { transition-delay: 0.2s; }
-        .mobile-menu-panel.active .mobile-menu-item:nth-child(4) { transition-delay: 0.25s; }
-        .mobile-menu-panel.active .mobile-menu-item:nth-child(5) { transition-delay: 0.3s; }
-        .mobile-menu-panel.active .mobile-menu-item:nth-child(6) { transition-delay: 0.35s; }
-        .mobile-menu-panel.active .mobile-menu-item:nth-child(7) { transition-delay: 0.4s; }
+            /* 스태거드 애니메이션 지연 */
+            .mobile-menu-panel.active .mobile-menu-item:nth-child(1) { transition-delay: 0.1s; }
+            .mobile-menu-panel.active .mobile-menu-item:nth-child(2) { transition-delay: 0.15s; }
+            .mobile-menu-panel.active .mobile-menu-item:nth-child(3) { transition-delay: 0.2s; }
+            .mobile-menu-panel.active .mobile-menu-item:nth-child(4) { transition-delay: 0.25s; }
+            .mobile-menu-panel.active .mobile-menu-item:nth-child(5) { transition-delay: 0.3s; }
+            .mobile-menu-panel.active .mobile-menu-item:nth-child(6) { transition-delay: 0.35s; }
+            .mobile-menu-panel.active .mobile-menu-item:nth-child(7) { transition-delay: 0.4s; }
         
         /* 스와이프 진행률 표시 */
         .swipe-indicator {
@@ -826,6 +828,38 @@
         /* 테마 전환 애니메이션 */
         * {
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        /* 데스크톱에서 모바일 관련 요소 숨기기 */
+        @media screen and (min-width: 768px) {
+            .mobile-menu-header {
+                display: none !important;
+            }
+            
+            .mobile-menu-close {
+                display: none !important;
+            }
+            
+            .swipe-indicator {
+                display: none !important;
+            }
+            
+            .mobile-menu-item {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+        }
+        
+        /* 스태거드 애니메이션 지연 (모바일에서만) */
+        @media screen and (max-width: 767px) {
+            .mobile-menu-panel.active .mobile-menu-item:nth-child(1) { transition-delay: 0.1s; }
+            .mobile-menu-panel.active .mobile-menu-item:nth-child(2) { transition-delay: 0.15s; }
+            .mobile-menu-panel.active .mobile-menu-item:nth-child(3) { transition-delay: 0.2s; }
+            .mobile-menu-panel.active .mobile-menu-item:nth-child(4) { transition-delay: 0.25s; }
+            .mobile-menu-panel.active .mobile-menu-item:nth-child(5) { transition-delay: 0.3s; }
+            .mobile-menu-panel.active .mobile-menu-item:nth-child(6) { transition-delay: 0.35s; }
+            .mobile-menu-panel.active .mobile-menu-item:nth-child(7) { transition-delay: 0.4s; }
         }
     </style>
 </head>
